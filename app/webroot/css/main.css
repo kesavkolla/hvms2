@@ -1,0 +1,51 @@
+body {
+    background: #fff;
+    width: 1000px;
+    color: #333;
+}
+
+input {
+    width: 50%;
+}
+
+.chatty {
+    color: #E47911;
+    font-weight: bold;
+}
+
+.message a {
+    text-decoration: none;
+    font-size: 13px;
+    background: 
+}
+
+#header {
+}
+
+#header #logo {
+    float: left;
+}
+
+#header #mast {
+    float: right;
+    margin-top: 25px;
+}
+
+#header #mast #logout {
+    font-size: 11px;    
+}
+#header #nav-left {
+    background: url('/hvms/img/header_bg_left.png') top left no-repeat;
+    margin-top: 60px;
+}
+
+#header  #nav-right {
+    margin-left: 20px;
+    padding: 30px 5px;
+    background: url('/hvms/img/header_bg_right.png') top right no-repeat;
+}
+
+#header ul#menu li {
+    list-style: none;
+}
+

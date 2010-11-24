@@ -1,0 +1,11 @@
+<?php $confirmLink = $html->url('/users/confirm/'. $username . '/' . $hash, true); ?>
+
+
+Dear <?php echo $username ?>,
+<br/>
+Thank you for registering with HealthVMS! Please click the following link to confirm your registration.
+<br/>
+<?php echo $html->link($confirmLink, $confirmLink); ?>
+<br/> 
+or copy and paste the following link in your browser:
+<?php echo $confirmLink ?>
