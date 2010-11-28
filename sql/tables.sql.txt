@@ -1,0 +1,133 @@
+-- phpMyAdmin SQL Dump
+-- version 3.2.0.1
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Nov 25, 2010 at 12:39 AM
+-- Server version: 5.1.36
+-- PHP Version: 5.3.0
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Database: `hvms`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hospitals`
+--
+
+CREATE TABLE IF NOT EXISTS `hospitals` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(300) NOT NULL,
+  `address1` varchar(100) NOT NULL,
+  `address2` varchar(100) NOT NULL,
+  `city` varchar(50) NOT NULL,
+  `state` varchar(10) NOT NULL,
+  `zip` varchar(20) NOT NULL,
+  `phone` varchar(30) NOT NULL,
+  `fax` varchar(30) NOT NULL,
+  `description` varchar(300) NOT NULL,
+  `domainsallowed` varchar(500) NOT NULL,
+  `url` varchar(300) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `hospital`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jobs`
+--
+
+CREATE TABLE IF NOT EXISTS `jobs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(300) NOT NULL,
+  `jobid` varchar(100) NOT NULL,
+  `startdate` date NOT NULL,
+  `enddate` date NOT NULL,
+  `description` varchar(500) NOT NULL,
+  `location` varchar(100) NOT NULL,
+  `jobtype` varchar(100) NOT NULL,
+  `schedule` varchar(100) NOT NULL,
+  `comments` varchar(300) NOT NULL,
+  `ratemin` int(11) NOT NULL,
+  `ratemax` int(11) NOT NULL,
+  `expensespaid` tinyint(1) NOT NULL,
+  `role` varchar(300) NOT NULL,
+  `openings` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `published` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `jobs`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `profile`
+--
+
+CREATE TABLE IF NOT EXISTS `profiles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `firstname` varchar(100) NOT NULL,
+  `middleinitial` varchar(1) DEFAULT NULL,
+  `lastname` varchar(100) NOT NULL,
+  `address1` varchar(100) DEFAULT NULL,
+  `address2` varchar(100) DEFAULT NULL,
+  `city` varchar(50) DEFAULT NULL,
+  `state` varchar(10) DEFAULT NULL,
+  `zip` varchar(20) DEFAULT NULL,
+  `phone` varchar(30) DEFAULT NULL,
+  `fax` varchar(30) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `currentcompany` varchar(200) DEFAULT NULL,
+  `role` varchar(100) DEFAULT NULL,
+  `notice` varchar(100) DEFAULT NULL,
+  `startavailability` date DEFAULT NULL,
+  `relocate` tinyint(1) DEFAULT NULL,
+  `comment` varchar(300) DEFAULT NULL,
+  `blurb` varchar(300) DEFAULT NULL,
+  `hospital_id` int(11) DEFAULT NULL,
+  `resume` longblob,
+  `published` tinyint(4) NOT NULL,
+  `status` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `profiles`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `type` enum('cand','hosp','admin') NOT NULL DEFAULT 'cand',
+  `status` tinyint(4) NOT NULL DEFAULT '0',
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='User table' AUTO_INCREMENT=2 ;
+
