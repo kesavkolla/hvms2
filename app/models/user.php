@@ -2,11 +2,27 @@
 
 class User extends AppModel {
     public $name = 'User';
+    public $actsAs = array('Containable');
+    public $hasOne = 'Profile';
+    public $belongsTo = 'Hospital';
+    public $hasMany = 'Job';
+    public $hasAndBelongsToMany = array(
+        'Version' =>
+            array(
+                'className'              => 'Version',
+                'joinTable'              => 'users_skills',
+                'foreignKey'             => 'user_id',
+                'associationForeignKey'  => 'version_id',
+                'unique'                 => true,
+            )
+    );
+    
     public $validate = array(
         'username' => array (
                              'rule' => 'email',
                              'required' => true,
                              'allowEmpty' => false,
+                             'message' => 'Please enter a valid email'
                             ),
         'tmp_password' => array(
                             'rule' => array('minLength', '8'),
@@ -39,12 +55,20 @@ class User extends AppModel {
     }
 
     function beforeSave() {
-        if ($this->validates()) { // populate the password field
+        if (isset($this->data['User']['tmp_password']) && $this->validates()) { // populate the password field
             $this->data['User']['password'] =  Security::hash($this->data['User']['tmp_password'], null, true); 
-            return true;
         }
-        return false;
+        return true;
     }
+ 
+    function published($fields = null) { 
+        $conditions = array( 
+            $this->name . '.published' => 1 
+        ); 
+     
+        return $this->findAll($conditions, $fields); 
+    }
+   
 }
 
 ?>

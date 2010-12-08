@@ -2,10 +2,73 @@ body {
     background: #fff;
     width: 1000px;
     color: #333;
+    font-family: "frutiger linotype", "lucida grande", tahoma, verdana, arial, sans-serif;
+    font-size: 13px;
 }
 
+select {
+    font-family: "frutiger linotype", "lucida grande", tahoma, verdana, arial, sans-serif;
+}
 input {
     width: 50%;
+}
+
+h1, h2, h3, h4 {
+	font-weight: normal;
+	margin-bottom: 5px;
+}
+h1 {
+	background:#fff;
+	color: #003d4c;
+	font-size: 100%;
+}
+h2 {
+	background:#fff;
+	color: #e32;
+	font-size: 190%;
+}
+h3 {
+	color: #993;
+	font-size: 165%;
+}
+h4 {
+	color: #993;
+	font-weight: normal;
+}
+ul, li {
+	margin: 0 12px;
+}
+
+dl {
+    margin-bottom: 5px;
+    display: block;
+}
+
+dt {
+    float: left;
+    font-weight: bold;
+    width: 200px;
+        clear: both;
+
+}
+
+dd {
+    float: left;
+}
+#container {
+	text-align: left;
+        padding-left: 20px;
+}
+
+#header{
+	padding: 10px 20px;
+}
+
+#header h1 {
+	line-height:20px;
+	background: #003d4c url('../img/cake.icon.png') no-repeat left;
+	color: #fff;
+	padding: 0px 30px;
 }
 
 .chatty {
@@ -13,7 +76,14 @@ input {
     font-weight: bold;
 }
 
-.message a {
+div.message {
+    background: none;
+    color: #E47911;
+    font-weight: bold;
+    padding: 5px 30px;
+}
+div.message a {
+    color: #E47911;
     text-decoration: none;
     font-size: 13px;
     background: 
@@ -45,7 +115,158 @@ input {
     background: url('/hvms/img/header_bg_right.png') top right no-repeat;
 }
 
-#header ul#menu li {
+#menu {
+    margin: 0px;
+}
+#menu li {
     list-style: none;
+    float: left;
+    margin: 0px 20px 0px 0px;
 }
 
+#menu li a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #4f5054;
+}
+/* form css */
+form div {
+	clear: both;
+	margin-bottom: 1em;
+	padding: .5em;
+	vertical-align: text-top;
+}
+form .input {
+	color: #444;
+}
+form .required {
+}
+form .required label:after {
+	color: #e32;
+	content: '*';
+	display:inline;
+}
+form div.submit {
+	border: 0;
+	clear: both;
+	margin-top: 10px;
+}
+label {
+	font-size: 110%;
+	margin-bottom:3px;
+       	font-weight: bold;
+        margin-right: 10px;
+        display: inline-block;
+        width: 200px;
+}
+input, textarea {
+	clear: both;
+	width: 200px;
+}
+select {
+	vertical-align: text-bottom;
+}
+select[multiple=multiple] {
+	width: 100%;
+}
+option {
+	font-size: 120%;
+	padding: 0 3px;
+}
+input[type=checkbox] {
+	clear: left;
+	float: left;
+	margin: 0px 6px 7px 2px;
+	width: auto;
+}
+div.checkbox label {
+	display: inline;
+}
+input[type=radio] {
+	float:left;
+	width:auto;
+	margin: 0 3px 7px 0;
+}
+div.radio label {
+	margin: 0 0 6px 20px;
+}
+input[type=submit] {
+	display: inline;
+	font-size: 110%;
+	width: auto;
+}
+form .submit input[type=submit] {
+	background:#62af56;
+	background: -webkit-gradient(linear, left top, left bottom, from(#cbd5bd), to(#699a2d));
+	background-image: -moz-linear-gradient(top, #cbd5bd, #699a2d);
+	text-shadow: #8cee7c 0px 1px 0px;
+        font-weight: bold;
+        padding: 5px;
+        color: #333;
+}
+form .submit input[type=submit]:hover {
+	background:#4ca83d;
+	background: -webkit-gradient(linear, left top, left bottom, from(#cbd5bd), to(#68903a));
+	background-image: -moz-linear-gradient(top, #85e573, #4ca83d);
+}
+
+.hint {
+    color: #666;
+    font-style: italic;
+}
+
+.error {
+    color: #e02d2d;
+    font-style: italic;
+}
+
+input.error {
+    border: 1px solid #e02d2d;
+}
+label.error {
+    padding-left: 20px;
+    font-weight: normal;
+}
+/* end form css */
+
+/* skills formatting */
+.skillbox {
+    display: inline-block;
+}
+
+.skillbox fieldset {
+    width: 500px;
+}
+.skillbox legend {
+    background: #eee;
+    padding: 3px 0px 3px 5px;
+    text-decoration: underline;
+    margin-bottom: 5px;
+    width: 100%;
+    font-weight: bold;
+}
+
+.skillbox .vendor,
+.skillbox .module {
+    cursor: pointer;
+}
+.skillbox .vendor {
+    margin-bottom: 10px;
+}
+
+.skillbox .vendor legend{
+}
+
+.skillbox .module legend{
+    padding-left: 20px;
+}
+
+.skillbox .version legend{
+    padding-left: 40px;
+}
+
+.skillbox .skill {
+    float: left;
+    width: 150px;
+    clear: none;
+}

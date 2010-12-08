@@ -1,20 +1,21 @@
 <?php
 
 class UsersController extends AppController {
-    var $scaffold;
-    
+    public $scaffold;
+    public $uses = array('User', 'Hospital');
     public $components = array('Auth', /*'Security',*/ 'Session', 'Email');
 
     function beforeFilter() {
-            $this->Auth->allow('index','register', 'confirm');
+            $this->Auth->allow('index', 'register', 'register_cand', 'register_hosp', 'confirm');
+            
             parent::beforeFilter();
+            $this->Auth->loginRedirect = array('controller' => 'users', 'action' => 'register_hosp');
             //$this->Security->blackHoleCallback = 'forceSsl';
             //$this->Security->requireSecure('login', 'register');
     }
 
  
     function login() {
-        
     }
     
 
@@ -22,29 +23,59 @@ class UsersController extends AppController {
        $this->redirect($this->Auth->logout());
     }
 
+    function register_cand() {
+        if ($this->Auth->user()) {
+            $this->redirect('/');
+        }
+        else {
+            $this->register();    
+        }
+    }
+    
+    function register_hosp() {
+        if ($this->Auth->user()) {
+          //  $this->redirect('/');
+        }
+        else {
+            $this->set("hospitals", $this->Hospital->find('list',
+                                                  array('fields' => array('Hospital.id', 'Hospital.name'))));
+        }
+        $this->register();
+    }
+    
     function register() {
         if ($this->data) {
-            if ($this->User->save($this->data, array('validate' => true))) {
-                $this->sendVerifyEmail();
-                $message = 'One more step to go! We have sent a confirmation email to you at ' . $this->data['User']['username']  . '.';
-                $this->set('success', $message);
-            }
-            else {
-                if ($invalidFields = $this->User->invalidFields()){
-                    // invalid fields, let the framework take care of it
+            $this->User->create($this->data);
+            if ($this->User->validates()) {
+                // check hospital domain
+                if ($this->validUserDomain()) {
+                    if ($this->User->save($this->data, array('validate' => true))) {
+                        $this->sendVerifyEmail();
+                        $message = 'One more step to go! We have sent a confirmation email to you at ' . $this->data['User']['username']  . '.';
+                        $this->Session->setFlash($message);
+                    }
+                    else {
+                        if ($invalidFields = $this->User->invalidFields()){
+                            // invalid fields, let the framework take care of it
+                        }
+                        else {
+                            $db =& ConnectionManager::getDataSource($this->User->useDbConfig);
+                            $error = $db->lastError();
+                            if (strstr($error, 'Duplicate entry'))  {
+                                $error = 'This email is already registered. Please login to proceed.';
+                                $this->User->invalidate('username', $error); // invalidate username 
+                            }
+                            
+                            $this->set('errors', $error);
+                        }
+                    }
                 }
                 else {
-                    $db =& ConnectionManager::getDataSource($this->User->useDbConfig);
-                    $error = $db->lastError();
-                    if (strstr($error, 'Duplicate entry'))  {
-                        $error = 'This username is already registered. Please login to proceed.';
+                        $error = 'Please enter an email that is associated with the hospital you have selected';
                         $this->User->invalidate('username', $error); // invalidate username 
-                    }
-                    
-                    $this->set('errors', $error);
+
                 }
             }
-            
         }
     }
 
@@ -66,45 +97,45 @@ class UsersController extends AppController {
             else {
                 $this->User->invalidate('old_password', 'Incorrect password for ' . $user['User']['username']);
             }
-    
         }
         
     }
     
     function confirm($email, $hash) {
         $userData = $this->User->findByUsername($email);
-        $this->User->create($userData);
-        
+        $this->User->create($userData);        
         if ($this->User->getConfirmationHash() == $hash) {
-            $this->User->set('status', 1); // TODO - statuses go in config
-        }
-        
-        if ($this->User->save()) {
-            // do something intelligent here
-            // redirect to xxx
+            $this->User->set('status', Configure::read('user.STATUS_VERIFIED'));
+            if ($this->User->save(null, false)) {
+                $this->Session->setFlash('Thank you for confirming your account. (TODO: redirect to somplace, my account maybe?)');
+            }
+            else {
+                echo 'error';
+                pr ($this->User->invalidFields());
+            }
         }
     }
     
-    // TODO: change echo's to flashes
+    // TODO: change echo's to flashes and actually generate the email
     function forgot () {
         if ($resetLink = $this->generateResetPwLink()) {
             echo 'auto_reset_pw/' . $resetLink;
         }
     }
 
-    // TODO: change echo's to flashes    
     function auto_reset_pw($OTP, $expiry, $userID)  {
         if (time() > $expiry) {
             $this->Session->setFlash('This password link has expired. Please generate an new one.');
             $this->redirect('/users/forgot');
         }
         $user = $this->User->findById($userID);
-        pr($this->generateOTP($expiry, $userID, $user['User']['password']));
+        pr($this->generateOTP($expiry, $userID, $user['User']['password'])); // TODO - remove this line
         if ($OTP == $this->generateOTP($expiry, $userID, $user['User']['password'])) {
             $user['User']['tmp_password'] = $OTP;
             $user['User']['confirm_password'] = $OTP;
             if ($this->User->save($user)) {
-                $this->Session->setFlash('Successfully saved. Please reset ASAP (make message better).');
+                $this->Session->setFlash('We have successfully reset your password. You should change it immediately something that you can remember.');
+                $this->redirect('/users/resetpw');    
             }
             else {
                 $this->Session->setFlash('There was an error resetting your password. Please re-request a new password.');
@@ -151,6 +182,25 @@ class UsersController extends AppController {
         
         pr($this->Session->read('Message.email'));
     }
+    
+    private function validUserDomain() {
+        if (isset($this->data['User']['type']) &&
+            $this->data['User']['type'] == 'hosp') {
+            $hospital = $this->Hospital->findById($this->data['User']['hospital_id']);
+            $uname = $this->data['User']['username'];
+            $allowedDomains = explode(',', $hospital['Hospital']['domainsallowed']);
+            foreach ($allowedDomains as $domain) {
+                if (endswith($uname, $domain)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    
 }
 
 ?>
