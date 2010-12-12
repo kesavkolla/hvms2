@@ -5,41 +5,68 @@
 			<?php echo $curJob['description']; ?>
 		</div>
 		<div class="details">
-			<dl>
-				<?php //if (isset($curJob['jobid'])) { ?>
-				<dt>Job Id</dt>
-				<dd>
-					<?php echo $curJob['jobid']; ?>
-				</dd>
-				?>
-				
-				<?php //if (isset($curJob['startdate'])) { ?>}
-				<dt>Timeframe</dt>
-				<dd>
-					Start: 
-					<?php echo $curJob['startdate']; ?>
-					<?php //if (isset($curJob['startdate'])) { ?>}
-					
-					<?php echo $curJob['enddate']; ?>
-					
-					
-					, at
-					<?php echo $curJob['location']; ?>
-				</dd>
+                    <dl class="clearfix">
+                        <?php if (isset($curJob['jobid'])) { ?>
+                        <dt class="job-id">Req</dt>
+                        <dd class="job-id">
+                                <?php echo $curJob['jobid']; ?>
+                        </dd>
+                        <?php } ?>
+                        
+                        <?php if (isset($curJob['startdate'])) { ?>
+                        <dt class="timeframe">Schedule</dt>
+                        <dd class="timeframe">
+                            <?php echo $time->format($curJob['startdate']); ?>
+                            <?php
+                                if (isset($curJob['enddate'])) {
+                                    echo ' to ' . $time->format($curJob['enddate']); 
+                                } ?>					
+                        </dd>
+                        <?php } ?>
+                        
+                        <?php if (isset($curJob['location'])) { ?>
+                        <dt class="location">Location</dt>
+                        <dd class="location">
+                                <?php echo $curJob['location']; ?>
+                        </dd>
+                        <?php } ?>
 
 
-			<dd><?php echo $curJob['location']; ?></dd>
-			<dd><?php echo $curJob['jobtype']; ?></dd>
-			<dd><?php echo $curJob['schedule']; ?></dd>
-			<dd><?php echo $curJob['comments']; ?></dd>
-			<dd><?php echo $curJob['ratemin']; ?></dd>
-			<dd><?php echo $curJob['ratemax']; ?></dd>
-			<dd><?php echo $curJob['expensespaid']; ?></dd>
-			<dd><?php echo $curJob['role']; ?></dd>
-			<dd><?php echo $curJob['openings']; ?></dd>
-			<dd><?php echo $curJob['status']; ?></dd>
-			<dd><?php echo $curJob['published']; ?></dd>
-			<div class="skills">
+                        <?php if (isset($curJob['schedule'])) { ?>
+                        <dt class="schedule">Schedule</dt>
+                        <dd class="schedule">
+                                <?php echo $curJob['schedule']; ?>
+                        </dd>
+                        <?php } ?>
+
+
+                        <?php if (isset($curJob['ratemin']) || isset($curJob['ratemax'])) { ?>
+                        <dt class="rate">Hourly Rate</dt>
+                        <dd class="rate">
+                            <?php
+                                echo isset($curJob['ratemin']) ?
+                                    $number->currency($curJob['ratemin'],'USD') .  ' to ':
+                                    ' less than ';
+                                
+                                echo isset($curJob['ratemax']) ?
+                                    $number->currency($curJob['ratemax'],'USD') :
+                                    'unspecified maximum';
+                        }
+                        if (isset($curJob['expensespaid']) && $curJob['expensespaid']) { 
+                            echo ' (expenses paid)';
+                        }
+                        ?>
+                        </dd>
+
+                        <?php if (isset($curJob['role'])) { ?>
+                        <dt class="role">Role</dt>
+                        <dd>
+                                <?php echo $curJob['role']; ?>
+                        </dd>
+                        <?php } ?>
+                     
+			<dt class="skills">Skills</dt>
+                        <dd class="skills">
 			<?php
                             foreach ($job['Version'] as $skillInfo) {
                                 $skill = '';
@@ -50,5 +77,6 @@
 				echo "<div class=\"skill\">{$skill} </div>";
 			    }
 			?>
-			</div>
+                        </dd>
+			</dl>
 		</div>

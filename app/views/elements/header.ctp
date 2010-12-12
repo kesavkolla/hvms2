@@ -2,6 +2,7 @@
     <div id="logo">
         <img src="<?php echo $this->webroot ?>img/logo.png" alt="HealthVMS" title="HealthVMS" />
     </div>
+    
     <div id="mast">
 
     <?php if ($session->read('Auth.User.username')) { ?>
@@ -15,16 +16,33 @@
     ?>
     </div>
     
+    <?php
+        $tabs = array();
+        $tabs['Home'] = array ('controller' => 'pages', 'action' => 'display');
+        if ($session->read('Auth.User.username')) {
+            $tabs['My Profile'] =  array('controller' => 'profiles', 'action' => 'edit', $session->read('Auth.User.id'));
+            
+            if ($session->read('Auth.User.type') == 'cand') {
+                $tabs['Find Jobs'] = array('controller' => 'jobs', 'action' => 'search');
+            }
+            else if ($session->read('Auth.User.type') == 'hosp') {
+                $tabs['Find Employees'] = array('controller' => 'profiles', 'action' => 'search');
+                $tabs['Manage My Jobs'] = array('controller' => 'jobs', 'action' => 'index');                
+            }
+        }
+    ?>
     <div id="nav-left">
        <div id="nav-right">
-        <ul id="menu">
-            <li>
-                <a href="<?php echo $this->webroot ?>">Home<a>
-            </li>
-            <?php if ($session->read('Auth.User.username')) {
-                echo '<li>';
-                echo $html->link('My Profile', array('controller' => 'profiles', 'action' => 'view', $session->read('Auth.User.id')));
-                echo '</li>';
+        <ul id="menu" class="clearfix">
+            <?php
+            foreach ($tabs as $linkText => $url) {
+                $class = '';
+                if ($this->params['controller'] == $url['controller'] &&
+                    (($this->params['action'] != 'search' && $url['action'] != 'search') ||
+                    (($this->params['action'] == 'search') && $this->params['action'] == $url['action']))) {
+                    $class = ' class="selected"';
+                }
+                echo "<li{$class}>" . $html->link($linkText, $url) . '</li>';
             }
             ?>
         </ul>

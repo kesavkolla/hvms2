@@ -1,6 +1,5 @@
 body {
     background: #fff;
-    width: 1000px;
     color: #333;
     font-family: "frutiger linotype", "lucida grande", tahoma, verdana, arial, sans-serif;
     font-size: 13px;
@@ -55,6 +54,9 @@ dt {
 dd {
     float: left;
 }
+#content {
+    width: 1000px;
+}
 #container {
 	text-align: left;
         padding-left: 20px;
@@ -62,6 +64,9 @@ dd {
 
 #header{
 	padding: 10px 20px;
+}
+
+#header ul {
 }
 
 #header h1 {
@@ -117,11 +122,18 @@ div.message a {
 
 #menu {
     margin: 0px;
+    line-height: 2.5;
+    width: 100%;
 }
 #menu li {
     list-style: none;
     float: left;
     margin: 0px 20px 0px 0px;
+    padding: 0px 10px;
+}
+
+#menu li.selected {
+    background: #fff;
 }
 
 #menu li a {
@@ -215,7 +227,7 @@ form .submit input[type=submit]:hover {
     font-style: italic;
 }
 
-.error {
+form .error {
     color: #e02d2d;
     font-style: italic;
 }
@@ -226,6 +238,10 @@ input.error {
 label.error {
     padding-left: 20px;
     font-weight: normal;
+}
+
+form .downloadlink {
+    padding-right: 10px;
 }
 /* end form css */
 
@@ -269,4 +285,25 @@ label.error {
     float: left;
     width: 150px;
     clear: none;
+}
+
+/* jobs formatting */
+.job {
+    width: 500px;
+}
+.job .title {
+    font-weight: bold;
+}
+.job .description {
+    font-style: italic;
+    line-height: 1;
+    margin: 5px 0px;
+}
+.job dt {
+    font-weight: normal;
+    
+}
+
+.job .publish {
+    font-style: italic;   
 }

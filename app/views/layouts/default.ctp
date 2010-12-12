@@ -20,7 +20,7 @@
 <?php echo $scripts_for_layout ?>
 </head>
 <body>
-
+<div id="content">
 <!-- Here's where I want my views to be displayed -->
 <?php
 echo $this->element('header'); 
@@ -32,6 +32,8 @@ echo $this->Session->flash('auth');
 echo $content_for_layout;
 ?>
 </div>
+</div>
 	<?php echo $this->element('sql_dump'); ?>
+
 </body>
 </html>

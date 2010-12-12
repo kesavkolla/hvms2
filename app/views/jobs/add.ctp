@@ -1,7 +1,7 @@
 <?php echo $html->script('job', array('inline' => false)); ?>
 
 <div class="jobs form">
-<?php echo $this->Form->create('Job');?>
+<?php echo $this->Form->create('Job', array('id'=>'JobAddForm'));?>
 	<fieldset>
  		<legend><?php __('Add Job'); ?></legend>
 	<?php

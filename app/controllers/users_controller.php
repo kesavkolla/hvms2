@@ -4,12 +4,11 @@ class UsersController extends AppController {
     public $scaffold;
     public $uses = array('User', 'Hospital');
     public $components = array('Auth', /*'Security',*/ 'Session', 'Email');
-
+    
     function beforeFilter() {
             $this->Auth->allow('index', 'register', 'register_cand', 'register_hosp', 'confirm');
             
             parent::beforeFilter();
-            $this->Auth->loginRedirect = array('controller' => 'users', 'action' => 'register_hosp');
             //$this->Security->blackHoleCallback = 'forceSsl';
             //$this->Security->requireSecure('login', 'register');
     }
@@ -23,27 +22,14 @@ class UsersController extends AppController {
        $this->redirect($this->Auth->logout());
     }
 
-    function register_cand() {
+    
+    function register() {
         if ($this->Auth->user()) {
             $this->redirect('/');
         }
-        else {
-            $this->register();    
-        }
-    }
-    
-    function register_hosp() {
-        if ($this->Auth->user()) {
-          //  $this->redirect('/');
-        }
-        else {
-            $this->set("hospitals", $this->Hospital->find('list',
-                                                  array('fields' => array('Hospital.id', 'Hospital.name'))));
-        }
-        $this->register();
-    }
-    
-    function register() {
+        $this->set('hospitals', $this->Hospital->find('list',
+                                      array('fields' => array('Hospital.id', 'Hospital.name'))));
+
         if ($this->data) {
             $this->User->create($this->data);
             if ($this->User->validates()) {

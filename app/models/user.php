@@ -6,17 +6,7 @@ class User extends AppModel {
     public $hasOne = 'Profile';
     public $belongsTo = 'Hospital';
     public $hasMany = 'Job';
-    public $hasAndBelongsToMany = array(
-        'Version' =>
-            array(
-                'className'              => 'Version',
-                'joinTable'              => 'users_skills',
-                'foreignKey'             => 'user_id',
-                'associationForeignKey'  => 'version_id',
-                'unique'                 => true,
-            )
-    );
-    
+
     public $validate = array(
         'username' => array (
                              'rule' => 'email',
@@ -57,6 +47,10 @@ class User extends AppModel {
     function beforeSave() {
         if (isset($this->data['User']['tmp_password']) && $this->validates()) { // populate the password field
             $this->data['User']['password'] =  Security::hash($this->data['User']['tmp_password'], null, true); 
+        }
+        
+        if (isset($this->data['User']['type']) && $this->data['User']['type'] == 'cand') {
+            unset($this->data['User']['hospital_id']);
         }
         return true;
     }

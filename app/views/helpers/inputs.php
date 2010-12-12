@@ -45,18 +45,15 @@ class InputsHelper extends AppHelper {
         );
     }
     
-    function getSkillsFromVersions ($versions) {
-        $skills = array();
-        foreach ($versions as $version) {
-            $module = ClassRegistry::init('Module')->findById($version['module_id']);
-            
-            $moduleName = $module['Module']['modulename'];
-            $versionName = $version['versionname'];
-            $vendorName = $module['Vendor']['vendorname'];
-            
-            $skills [] = "$vendorName $moduleName $versionName";
-        }
-        return ($skills);
+    function getCandidateNotice () {
+        return array (
+                'Immediate' => 'Immediate',
+                '1 Week Notice' => '1 Week Notice',
+                '2 Weeks Notice' =>  '2 Weeks Notice',
+                '3 Weeks Notice' =>  '3 Weeks Notice',
+                '4 Weeks Notice' =>  '4 Weeks Notice',
+                'Other' => 'Other'
+        );
     }
 }
 ?>

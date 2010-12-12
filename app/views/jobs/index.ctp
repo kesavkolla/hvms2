@@ -3,22 +3,27 @@
 	<?php
 	foreach ($jobs as $job) {
 		echo ($this->element('job/job_display',
-				     array('job' => $job)));	
+				     array('job' => $job)));
+                
+        ?>
+        <div class="publish">
+        <?php
+            if ($job['Job']['published']) {
+               echo 'This job has been published. ' . $this->Html->link(__('Un-publish this job', true), array('action' => 'unpublish', $job['Job']['id'])); 
+            }
+            else {
+               echo 'This job has not been published. ' . $this->Html->link(__('Publish this job', true), array('action' => 'publish', $job['Job']['id'])); 
+            }
+        ?>
+        </div>
+        <?php
 	}
 	?>
-	
-		<div class="actions">
-			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $job['Job']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $job['Job']['id'])); ?>
-			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $job['Job']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $job['Job']['id'])); ?>
-		</div>
-	</div>
+
 </div>
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('New Job', true), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User', true), array('controller' => 'users', 'action' => 'add')); ?> </li>
 	</ul>
 </div>

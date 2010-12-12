@@ -847,6 +847,7 @@ class AuthComponent extends Object {
 		} else {
 			$conditions = $this->userScope;
 		}
+                
 		$model =& $this->getModel();
 		if (empty($user)) {
 			$user = $this->user();

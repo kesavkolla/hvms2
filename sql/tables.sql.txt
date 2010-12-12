@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.2.0.1
+-- version 3.2.4
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 25, 2010 at 12:39 AM
--- Server version: 5.1.36
--- PHP Version: 5.3.0
+-- Generation Time: Dec 11, 2010 at 05:33 PM
+-- Server version: 5.1.41
+-- PHP Version: 5.3.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -33,12 +33,7 @@ CREATE TABLE IF NOT EXISTS `hospitals` (
   `domainsallowed` varchar(500) NOT NULL,
   `url` varchar(300) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `hospital`
---
-
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -49,34 +44,59 @@ CREATE TABLE IF NOT EXISTS `hospitals` (
 CREATE TABLE IF NOT EXISTS `jobs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `title` varchar(300) NOT NULL,
-  `jobid` varchar(100) NOT NULL,
-  `startdate` date NOT NULL,
-  `enddate` date NOT NULL,
-  `description` varchar(500) NOT NULL,
-  `location` varchar(100) NOT NULL,
-  `jobtype` varchar(100) NOT NULL,
-  `schedule` varchar(100) NOT NULL,
-  `comments` varchar(300) NOT NULL,
-  `ratemin` int(11) NOT NULL,
-  `ratemax` int(11) NOT NULL,
-  `expensespaid` tinyint(1) NOT NULL,
-  `role` varchar(300) NOT NULL,
-  `openings` int(11) NOT NULL,
-  `status` int(11) NOT NULL,
-  `published` int(11) NOT NULL,
+  `title` varchar(300) DEFAULT NULL,
+  `jobid` varchar(100) DEFAULT NULL,
+  `startdate` date DEFAULT NULL,
+  `enddate` date DEFAULT NULL,
+  `description` varchar(500) DEFAULT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `jobtype` varchar(100) DEFAULT NULL,
+  `schedule` varchar(100) DEFAULT NULL,
+  `comments` varchar(300) DEFAULT NULL,
+  `ratemin` int(11) DEFAULT NULL,
+  `ratemax` int(11) DEFAULT NULL,
+  `expensespaid` tinyint(1) NOT NULL DEFAULT '1',
+  `role` varchar(300) DEFAULT NULL,
+  `openings` int(11) NOT NULL DEFAULT '1',
+  `status` int(11) DEFAULT NULL,
+  `published` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `jobs`
---
-
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `profile`
+-- Table structure for table `jobs_skills`
+--
+
+CREATE TABLE IF NOT EXISTS `jobs_skills` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_id` int(11) NOT NULL,
+  `version_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `job_version` (`job_id`,`version_id`),
+  KEY `job_id` (`job_id`),
+  KEY `version_id` (`version_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `modules`
+--
+
+CREATE TABLE IF NOT EXISTS `modules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `vendor_id` int(11) NOT NULL,
+  `modulename` varchar(300) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `vendor_id` (`vendor_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `profiles`
 --
 
 CREATE TABLE IF NOT EXISTS `profiles` (
@@ -92,25 +112,37 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `zip` varchar(20) DEFAULT NULL,
   `phone` varchar(30) DEFAULT NULL,
   `fax` varchar(30) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
   `title` varchar(100) DEFAULT NULL,
   `currentcompany` varchar(200) DEFAULT NULL,
   `role` varchar(100) DEFAULT NULL,
-  `notice` varchar(100) DEFAULT NULL,
-  `startavailability` date DEFAULT NULL,
+  `startavailability` varchar(100) DEFAULT NULL,
   `relocate` tinyint(1) DEFAULT NULL,
   `comment` varchar(300) DEFAULT NULL,
   `blurb` varchar(300) DEFAULT NULL,
+  `hospital_id` int(11) DEFAULT NULL,
+  `resume_name` varchar(300) DEFAULT NULL,
   `resume` longblob,
-  `published` tinyint(4) NOT NULL,
-  `status` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `published` tinyint(4) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `profiles`
+-- Table structure for table `profiles_skills`
 --
 
+CREATE TABLE IF NOT EXISTS `profiles_skills` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `profile_id` int(11) NOT NULL,
+  `version_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `version_id` (`version_id`),
+  KEY `profile_version` (`profile_id`,`version_id`),
+  KEY `profile_id` (`profile_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -121,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(100) NOT NULL,
-  `password` varchar(100) NOT NULL,
+  `password` varchar(500) NOT NULL,
   `type` enum('cand','hosp','admin') NOT NULL DEFAULT 'cand',
   `status` tinyint(4) NOT NULL DEFAULT '0',
   `hospital_id` int(11) DEFAULT NULL,
@@ -129,5 +161,31 @@ CREATE TABLE IF NOT EXISTS `users` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='User table' AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='User table' AUTO_INCREMENT=3 ;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vendors`
+--
+
+CREATE TABLE IF NOT EXISTS `vendors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `vendorname` varchar(300) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `versions`
+--
+
+CREATE TABLE IF NOT EXISTS `versions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `module_id` int(11) NOT NULL,
+  `versionname` varchar(300) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `module_id` (`module_id`),
+  KEY `module_id_2` (`module_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;

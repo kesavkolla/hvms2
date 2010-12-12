@@ -6,12 +6,12 @@ class Version extends AppModel {
 	public $belongsTo = array('Module');
 	
 	public $hasAndBelongsToMany = array(
-	    'User' =>
+	    'Profile' =>
 		array(
-		    'className'              => 'User',
-		    'joinTable'              => 'users_skills',
+		    'className'              => 'Profile',
+		    'joinTable'              => 'profiles_skills',
 		    'foreignKey'             => 'version_id',
-		    'associationForeignKey'  => 'user_id',
+		    'associationForeignKey'  => 'profile_id',
 		),
 
 	    'Job' =>
