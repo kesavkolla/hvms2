@@ -6,23 +6,56 @@ class JobsController extends AppController {
         public $components = array('Auth');
         public $helpers = array('Inputs', 'Number', 'Time');
         
-        function beforeFilter() {
-            // all actions except searching are restricted.
-            $action = $this->params['action'];
-            if ($action != 'search') {
-                // the user should be a hospital user
-                if ($this->Session->read('Auth.User.type') !== 'hosp') {
-                    $this->Session->setFlash('You are not authorized to view this page.');
-                    $this->redirect('/');
-                }
-                
-                if ($action == 'edit') {
-                    
-                }
+    function beforeFilter() {
+        // all actions except searching are restricted.
+        $action = $this->params['action'];
+        if ($action != 'search') {
+            // the user should be a hospital user
+            if ($this->Session->read('Auth.User.type') !== 'hosp') {
+                $this->Session->setFlash('You are not authorized to view this page.');
+                $this->redirect('/');
             }
-
+            
+            if ($action == 'edit') {
+                
+            }
         }
-        
+    }
+    
+    function search() {
+        $selectedSkills = array();
+        $jobs = array();
+        if ($this->data) {
+            $selectedSkills = $this->data['Version'];
+            
+            $jobs = $this->Job->find('all',
+                                     array (
+                                        'conditions' => array (
+                                                               'Job.published' => 1,
+                                                               'Job.status' => 1                                                
+                                                              ),
+                                        
+                                         'contain' => array (
+                                            'Version' => array (
+                                                'fields' => array('id', 'versionname'),
+                                                'conditions' => array (
+                                                                'Version.id' => $selectedSkills,                                               
+                                                ),
+                                                'Module.modulename' => array(
+                                                        'Vendor.vendorname'
+                                                )
+                                            ),
+                                            'User' => array (
+                                                'Hospital.name'
+                                            )                                            
+                                        )                                        
+                                     ));
+        }
+        $this->set('skills', $this->Vendor->getChainedSkills());
+        $this->set('selectedSkills', $selectedSkills);
+        $this->set('jobs', $jobs);
+    }
+
 	function index() {
                 $jobs = $this->Job->find('all',
                                         array('conditions' => array(

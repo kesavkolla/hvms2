@@ -248,10 +248,11 @@ form .downloadlink {
 /* skills formatting */
 .skillbox {
     display: inline-block;
+    overflow: hidden;
 }
 
 .skillbox fieldset {
-    width: 500px;
+    width: 520px;
 }
 .skillbox legend {
     background: #eee;
@@ -289,7 +290,9 @@ form .downloadlink {
 
 /* jobs formatting */
 .job {
-    width: 500px;
+    width: 600px;
+    border-bottom: 2px inset #eee;
+    padding-top: 10px;
 }
 .job .title {
     font-weight: bold;
@@ -306,4 +309,23 @@ form .downloadlink {
 
 .job .publish {
     font-style: italic;   
+}
+
+/* search styles */
+
+#left-nav {
+    width: 250px;
+    border-right: 1px inset #eee;
+    float: left;
+}
+#left-nav .skillbox fieldset {
+    width: 230px;
+}
+
+#left-nav .skill {
+    padding: 5px 0px 0px 0px;
+    margin: 0px;
+}
+#right-content {
+    margin-left: 300px;
 }

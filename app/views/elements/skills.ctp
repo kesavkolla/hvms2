@@ -36,16 +36,17 @@ foreach ($data as $vendorData) {
     $vendor = $vendorData ['Vendor'] ['vendorname'];
     $vendorId = $vendorData['Vendor']['id'];
     $moduleElementId = "modules$vendorId";
-    $vendorOnclick = "\$('#$moduleElementId').show()";
-    echo '<fieldset class="vendor" onclick="' . $vendorOnclick . '"><legend> ' . $vendor . '</legend>';
-    
+    $vendorOnclick = "\$('#$moduleElementId').toggle()";
+    echo '<fieldset class="vendor"><legend  onclick="' . $vendorOnclick . '"> ' . $vendor . '</legend>';
+    echo "<div id=\"$moduleElementId\" style=\"display:none\">";
+
     foreach ($vendorData['Module'] as $moduleData) {
         if (isset($moduleData['Version'])) {
             $module = $moduleData['modulename'];
             $moduleId = $moduleData['id'];
             $versionElementId = "versions$moduleId";
-            $moduleOnclick = "\$('#$versionElementId').show()";
-            echo "<fieldset class=\"module\" id=\"$moduleElementId\" onclick=\"$moduleOnclick\" style=\"display:none\"><legend>$module</legend>";
+            $moduleOnclick = "\$('#$versionElementId').toggle()";
+            echo "<fieldset class=\"module\"><legend onclick=\"$moduleOnclick\">$module</legend>";
             echo "<fieldset class=\"version\" id=\"$versionElementId\" style=\"display:none\">";
             
             $versionOptions = array();
@@ -70,12 +71,14 @@ foreach ($data as $vendorData) {
                 echo $version;
                 echo '</div>';
             }
+
             //echo $form->select('skill', $versionOptions, array('multiple' => true));
                         
             echo '</fieldset>'; // version
-
+            
             echo '</fieldset>'; // module
         }
     }
+    echo '</div>';
     echo '</fieldset>'; // vendor
 }

@@ -55,6 +55,7 @@
                      
     			<dt class="skills">Skills</dt>
                 <dd class="skills">
+                    <ul>
     			<?php
                     foreach ($job['Version'] as $skillInfo) {
                         $skill = '';
@@ -62,9 +63,11 @@
                         $moduleName = $skillInfo['Module']['modulename'];
                         $versionName = $skillInfo['versionname'];
                         $skill = "$vendorName $moduleName $versionName";
-                        echo "<div class=\"skill\">{$skill} </div>";
+                        echo "<li class=\"skill\">{$skill} </li>";
     			    }
     			?>
+                    </ul>
                 </dd>
 			</dl>
 		</div>
+</div>

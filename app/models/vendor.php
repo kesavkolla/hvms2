@@ -6,13 +6,14 @@ class Vendor extends AppModel {
 	
 	function getChainedSkills () {
 		$result = array();
-		$vendorList = $this->find('all');
-		foreach ($vendorList as $index => &$vendor) {
-			foreach ($vendor['Module'] as $vendorModules) {
-				$module = $this->Module->findById($vendorModules['id']);
-				$vendor['Module'][$index]['Version'] = $module['Version'];
-			}
-		}
+		$vendorList = $this->find('all',
+								  array(
+										'contain' => array(
+													 'Module.modulename' =>  'Version.versionname'),
+										'recursive' => 2
+										
+										)							  
+								 );
 		return ($vendorList);
 	}
 }

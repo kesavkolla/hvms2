@@ -1,5 +1,5 @@
 <?php
-/* Versions Test cases generated on: 2010-12-03 08:12:29 : 1291392149*/
+/* Versions Test cases generated on: 2010-12-14 19:12:22 : 1292384722*/
 App::import('Controller', 'Versions');
 
 class TestVersionsController extends VersionsController {
@@ -11,7 +11,7 @@ class TestVersionsController extends VersionsController {
 }
 
 class VersionsControllerTestCase extends CakeTestCase {
-	var $fixtures = array('app.version', 'app.module', 'app.user', 'app.profile', 'app.job', 'app.jobs_skill', 'app.users_skill');
+	var $fixtures = array('app.version', 'app.module', 'app.vendor', 'app.profile', 'app.user', 'app.hospital', 'app.job', 'app.jobs_skill', 'app.profiles_skill');
 
 	function startTest() {
 		$this->Versions =& new TestVersionsController();
@@ -23,23 +23,23 @@ class VersionsControllerTestCase extends CakeTestCase {
 		ClassRegistry::flush();
 	}
 
-	function testIndex() {
+	function testAdminIndex() {
 
 	}
 
-	function testView() {
+	function testAdminView() {
 
 	}
 
-	function testAdd() {
+	function testAdminAdd() {
 
 	}
 
-	function testEdit() {
+	function testAdminEdit() {
 
 	}
 
-	function testDelete() {
+	function testAdminDelete() {
 
 	}
 
