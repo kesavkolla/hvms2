@@ -3,11 +3,11 @@
 class UsersController extends AppController {
     public $scaffold;
     public $uses = array('User', 'Hospital');
-    public $components = array('Auth', /*'Security',*/ 'Session', 'Email');
+    public $components = array('Auth', /*'Security',*/ 'Session', 'Email', 'Cookie', 'RequestHandler');
     
     function beforeFilter() {
-            $this->Auth->allow('index', 'register', 'register_cand', 'register_hosp', 'confirm');
-            
+            $this->Auth->allow('index', 'register', 'register_cand', 'register_hosp', 'confirm', 'checkEmail');
+            $this->Auth->autoRedirect = false;
             parent::beforeFilter();
             //$this->Security->blackHoleCallback = 'forceSsl';
             //$this->Security->requireSecure('login', 'register');
@@ -15,21 +15,46 @@ class UsersController extends AppController {
 
  
     function login() {
+        if ($this->Auth->user()) {
+            if ($this->data &&
+                isset($this->data['User']) &&
+                isset($this->data['User']['remember_me']) &&
+                $this->data['User']['remember_me'])  {
+                $cookie = array();
+                $cookie['username'] = $this->data['User']['username'];
+                $cookie['password'] = $this->data['User']['password'];
+                $this->Cookie->write('Auth.User', $cookie, true, '+1 week');
+                unset($this->data['User']['remember_me']);
+            }
+            $this->redirect($this->Auth->redirect());
+        }
+        if (empty($this->data)) {
+            $cookie = $this->Cookie->read('Auth.User');
+            if (!is_null($cookie)) {
+                if ($this->Auth->login($cookie)) {
+                    $this->redirect($this->Auth->redirect());
+                } else { // Delete invalid Cookie
+                    $this->Cookie->delete('Auth.User');
+                }
+            }
+        }
     }
     
 
     function logout() {
+        $cookie = $this->Cookie->read('Auth.User');
+        if (!is_null($cookie)) {
+            $this->Cookie->delete('Auth.User');    
+        }
+        
        $this->redirect($this->Auth->logout());
     }
 
     
     function register() {
         if ($this->Auth->user()) {
-            $this->redirect('/');
+            $this->redirect(Auth.redirect());
         }
-        $this->set('hospitals', $this->Hospital->find('list',
-                                      array('fields' => array('Hospital.id', 'Hospital.name'))));
-
         if ($this->data) {
             $this->User->create($this->data);
             if ($this->User->validates()) {
@@ -57,7 +82,7 @@ class UsersController extends AppController {
                     }
                 }
                 else {
-                        $error = 'Please enter an email that is associated with the hospital you have selected';
+                        $error = 'Please enter an email that is associated with the hospital you work at.';
                         $this->User->invalidate('username', $error); // invalidate username 
 
                 }
@@ -134,6 +159,14 @@ class UsersController extends AppController {
         }
     }
     
+    function checkEmail() {
+        $this->autoRender = false;
+        if (isset($this->params['form']) && isset($this->params['form']['email'])) {
+            echo json_encode($this->getHospitalFromEmail($this->params['form']['email']));
+        }
+    }
+
+    
     private function generateResetPwLink() {
         if ($this->data && isset($this->data['User']['username'])) {
             $user = $this->User->findByUsername($this->data['User']['username']);
@@ -170,14 +203,19 @@ class UsersController extends AppController {
     }
     
     private function validUserDomain() {
-        if (isset($this->data['User']['type']) &&
-            $this->data['User']['type'] == 'hosp') {
-            $hospital = $this->Hospital->findById($this->data['User']['hospital_id']);
-            $uname = $this->data['User']['username'];
-            $allowedDomains = explode(',', $hospital['Hospital']['domainsallowed']);
-            foreach ($allowedDomains as $domain) {
-                if (endswith($uname, $domain)) {
-                    return true;
+        if ($this->data['User']['type'] == 'hosp') {
+            if ($hospId = $this->data['User']['hospital_id']) {
+                
+                $hospital = $this->Hospital->findById($hospId);
+                if ($hospital) {
+                    $uname = $this->data['User']['username'];
+                    $allowedDomains = explode(',', $hospital['Hospital']['domainsallowed']);
+                    foreach ($allowedDomains as $domain) {
+                        $domainCheck = '@'. trim($domain); // email must end with @domainname
+                        if (endswith($uname, $domainCheck)) {
+                            return true;
+                        }
+                    }
                 }
             }
             return false;
@@ -185,6 +223,20 @@ class UsersController extends AppController {
         else {
             return true;
         }
+    }
+    
+    private function getHospitalFromEmail($email) {
+        $hospitals = $this->Hospital->find('all');
+        foreach ($hospitals as $hospital) {
+            $allowedDomains = explode(',', $hospital['Hospital']['domainsallowed']);
+            foreach ($allowedDomains as $domain) {
+                if (endswith($email, trim($domain))) {
+                    return array ('id' => $hospital['Hospital']['id'],
+                                  'name' => $hospital['Hospital']['name']);
+                }
+            }
+        }
+        return;
     }
     
 }

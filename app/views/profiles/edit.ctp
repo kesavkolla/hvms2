@@ -17,33 +17,37 @@
 		echo $this->Form->input('zip');
 		echo $this->Form->input('phone');
 		echo $this->Form->input('fax');
-		echo $this->Form->input('title');
-		echo $this->Form->input('currentcompany', array('label' => 'Current Company'));
-		echo ($this->element('select_with_other',
-							 array('label' => 'Role',
-								   'options' => $this->Inputs->getJobRoles(),
-								   'fieldName' => 'role')));
-		echo ($this->element('select_with_other',
-							 array('label' => 'Start Availability',
-								   'options' => $this->Inputs->getCandidateNotice(),
-								   'fieldName' => 'startavailability')));		
-		echo $this->Form->input('relocate', array('label' => 'I can relocate'));
 		
-		if (isset($this->data['Profile']['resume_name'])) {
-				$resumeLink =  '<span class="downloadlink">' .
-						       $html->link($this->data['Profile']['resume_name'], FILES_URL . $this->data['Profile']['resume_name']) .
-							   '</span>';
-				$resumeLabel = 'Change Resume';
-		}
-		else {
-				$resumeLink = '';
-				$resumeLabel = 'Upload Resume';
-		}
-		echo '<div class="input file">';
-		echo "<label for=\"ProfileResumeUpload\">$resumeLabel</label>";
-		echo $resumeLink;
-		echo $this->Form->file('resume_upload');
-		echo '</div>';
+		// subsequent fields only for candidates.
+		if ($userType == 'cand') {
+
+			echo $this->Form->input('title');
+			echo $this->Form->input('currentcompany', array('label' => 'Current Company'));
+			echo ($this->element('select_with_other',
+								 array('label' => 'Role',
+									   'options' => $this->Inputs->getJobRoles(),
+									   'fieldName' => 'role')));
+			echo ($this->element('select_with_other',
+								 array('label' => 'Start Availability',
+									   'options' => $this->Inputs->getCandidateNotice(),
+									   'fieldName' => 'startavailability')));		
+			echo $this->Form->input('relocate', array('label' => 'I can relocate'));
+			
+			if (isset($this->data['Profile']['resume_name'])) {
+					$resumeLink =  '<span class="downloadlink">' .
+								   $html->link($this->data['Profile']['resume_name'], FILES_URL . $this->data['Profile']['resume_name']) .
+								   '</span>';
+					$resumeLabel = 'Change Resume';
+			}
+			else {
+					$resumeLink = '';
+					$resumeLabel = 'Upload Resume';
+			}
+			echo '<div class="input file">';
+			echo "<label for=\"ProfileResumeUpload\">$resumeLabel</label>";
+			echo $resumeLink;
+			echo $this->Form->file('resume_upload');
+			echo '</div>';
 	?>
 		
 		<div class="input">
@@ -52,6 +56,8 @@
 				<?php echo $this->element('skills', array('data' => $skills, 'selectedSkills' => $selectedSkills)) ?>
 			</div>
 		</div>
-
+<?php
+		} // user_type == cand
+?>
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>

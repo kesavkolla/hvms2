@@ -1,6 +1,8 @@
+<?php echo $html->script('hvms', array('inline' => false)); ?>
+
 <div id="left-nav">
 	<?php echo $this->Form->create(null, array('id' => 'JobSearchForm'));?>
-
+	<h3>Narrow Your Search</h3>
 	<div class="input">
 		<label>Skills Required</label>
 		<div class="skillbox">
@@ -12,15 +14,13 @@
 </div>
 
 <div id="right-content">
-	<h3>Search Results</h3>
+	<h3><?php echo $searchHeading ?></h3>
 	<?php
 	foreach ($jobs as $job) {
+		$userFlagged = in_array($job['Job']['id'], $userInterestIds);
 		echo ($this->element('job/job_display_abbrev',
-				     array('job' => $job)));
-				echo ($this->element('job/job_display_abbrev',
-				     array('job' => $job)));
-						echo ($this->element('job/job_display_abbrev',
-				     array('job' => $job)));
+				     array('job' => $job,
+						   'userFlagged' => $userFlagged)));
 	}
 	?>
 </div>

@@ -29,10 +29,6 @@ class Profile extends AppModel {
                              'allowEmpty' => false,
                              'message' => 'Please enter a valid phone number'
                             ),
-        'title' => array (
-                            'rule' => 'notEmpty',
-                            'required' => true
-        )
     );
     
     function published($fields = null) { 

@@ -28,10 +28,6 @@ Array
 skills that are preselected are passed in $selectedSkills
 */
 
-if (!isset($selectedSkills)) {
-    $selectedSkills = array();
-}
-
 foreach ($data as $vendorData) {
     $vendor = $vendorData ['Vendor'] ['vendorname'];
     $vendorId = $vendorData['Vendor']['id'];
@@ -55,8 +51,12 @@ foreach ($data as $vendorData) {
             foreach ($moduleData['Version'] as $versionData) {
                 $version = $versionData['versionname'];
                 $versionId = $versionData['id'];
+?>
+
+<cake:nocache>
+<?php
                 $checked = false;
-                if (in_array($versionId, $selectedSkills)) {
+                if ($selectedSkills && in_array($versionId, $selectedSkills)) {
                     $checked = true;
                     if (!$moduleShown) {
                         echo '<script type="text/javascript">';
@@ -66,6 +66,11 @@ foreach ($data as $vendorData) {
                         $moduleShown = true;
                     }
                 }
+?>
+<cake:nocache>
+
+
+<?php
                 echo '<div class="skill">';
                 echo $form->checkbox("Version.$versionId", array('value' => $versionId, 'hiddenField' => false, 'checked' => $checked));
                 echo $version;

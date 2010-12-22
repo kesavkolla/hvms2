@@ -1,20 +1,14 @@
 <?php $curJob = $job['Job'] ;?>
-<div class="job">
+<div class="job <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curJob['id']?>">
 		<div class="title"><?php echo $curJob['title']; ?></div>
 		<div class="description">
 			<?php echo $curJob['description']; ?>
 		</div>
 		<div class="details">
             <dl class="clearfix">
-                <?php if (isset($curJob['jobid'])) { ?>
-                <dt class="job-id">Req</dt>
-                <dd class="job-id">
-                        <?php echo $curJob['jobid']; ?>
-                </dd>
-                <?php } ?>
-                
+                <dt> ID </dt> <dd><?php echo $curJob['id']?> <span style="color:red; font-style:italic">delete before release </span></dd>
                 <?php if (isset($curJob['startdate'])) { ?>
-                <dt class="timeframe">Schedule</dt>
+                <dt class="timeframe">Details</dt>
                 <dd class="timeframe">
                     <?php echo $time->format($curJob['startdate']); ?>
                     <?php
@@ -28,8 +22,6 @@
                 <dt class="location">Location</dt>
                 <dd class="location">
                         <?php echo $curJob['location']; ?>
-                         at
-                        <?php echo $job['User']['Hospital']['name']; ?>
                 </dd>
                 <?php } ?>
 
@@ -70,4 +62,8 @@
                 </dd>
 			</dl>
 		</div>
+    <?php
+        echo $this->element('interest', array('userFlagged' => $userFlagged,
+                                              'interestId' => $curJob['id']));
+    ?>
 </div>

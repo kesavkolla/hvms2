@@ -14,7 +14,6 @@
 			<th><?php echo $this->Paginator->sort('zip');?></th>
 			<th><?php echo $this->Paginator->sort('phone');?></th>
 			<th><?php echo $this->Paginator->sort('fax');?></th>
-			<th><?php echo $this->Paginator->sort('email');?></th>
 			<th><?php echo $this->Paginator->sort('title');?></th>
 			<th><?php echo $this->Paginator->sort('currentcompany');?></th>
 			<th><?php echo $this->Paginator->sort('role');?></th>
@@ -23,7 +22,6 @@
 			<th><?php echo $this->Paginator->sort('relocate');?></th>
 			<th><?php echo $this->Paginator->sort('comment');?></th>
 			<th><?php echo $this->Paginator->sort('blurb');?></th>
-			<th><?php echo $this->Paginator->sort('resume');?></th>
 			<th><?php echo $this->Paginator->sort('published');?></th>
 			<th><?php echo $this->Paginator->sort('status');?></th>
 			<th class="actions"><?php __('Actions');?></th>
@@ -51,17 +49,14 @@
 		<td><?php echo $profile['Profile']['zip']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['phone']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['fax']; ?>&nbsp;</td>
-		<td><?php echo $profile['Profile']['email']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['title']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['currentcompany']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['role']; ?>&nbsp;</td>
-		<td><?php echo $profile['Profile']['notice']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['startavailability']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['relocate']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['comment']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['blurb']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['hospital_id']; ?>&nbsp;</td>
-		<td><?php echo $profile['Profile']['resume']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['published']; ?>&nbsp;</td>
 		<td><?php echo $profile['Profile']['status']; ?>&nbsp;</td>
 		<td class="actions">

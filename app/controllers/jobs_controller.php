@@ -30,30 +30,64 @@ class JobsController extends AppController {
             
             $jobs = $this->Job->find('all',
                                      array (
+                                        'fields' => array (
+                                          'DISTINCT Job.id', 'Job.title', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id'  
+                                        ),
+                                        'joins' => array(
+                                                array(
+                                                    'table' => 'jobs_skills',
+                                                    'alias' => 'JobsSkills',
+                                                    'type' => 'inner',
+                                                    'foreignKey' => true,
+                                                    'conditions'=> array('JobsSkills.job_id = Job.id', 'JobsSkills.version_id' => $selectedSkills)
+                                                )),
                                         'conditions' => array (
                                                                'Job.published' => 1,
-                                                               'Job.status' => 1                                                
+                                                               'Job.status' => 1,
+                                                               'JobsSkills.version_id' => $selectedSkills
                                                               ),
-                                        
-                                         'contain' => array (
-                                            'Version' => array (
-                                                'fields' => array('id', 'versionname'),
-                                                'conditions' => array (
-                                                                'Version.id' => $selectedSkills,                                               
-                                                ),
+                                        'limit' => 25,
+                                        'order' => array('Job.id DESC'),
+                                        'contain' => array (
+                                            'Version.versionname' => array (
                                                 'Module.modulename' => array(
                                                         'Vendor.vendorname'
                                                 )
                                             ),
                                             'User' => array (
-                                                'Hospital.name'
+                                                'Interest.interest_id'
                                             )                                            
                                         )                                        
                                      ));
+            $searchHeading = 'Search Results';
+        }
+        else {
+            $jobs = $this->Job->find('all',
+                     array (
+                        'conditions' => array (
+                                               'Job.published' => 1,
+                                               'Job.status' => 1                                              
+                                              ),
+                        'order' => array('Job.id DESC'),
+                         'contain' => array (
+                            'Version' => array (
+                                'fields' => array('id', 'versionname'),
+                                'Module.modulename' => array(
+                                        'Vendor.vendorname'
+                                )
+                            ),
+                            'User'                                    
+                        )                                        
+                     ));
+            $searchHeading = 'All Jobs';
         }
         $this->set('skills', $this->Vendor->getChainedSkills());
         $this->set('selectedSkills', $selectedSkills);
         $this->set('jobs', $jobs);
+        $this->set('searchHeading', $searchHeading);
+        
+        $interestInstance = ClassRegistry::init('Interest');
+        $this->set('userInterestIds', $interestInstance->getInterestIdsForUser($this->Session->read('Auth.User.id')));
     }
 
 	function index() {
@@ -99,12 +133,14 @@ class JobsController extends AppController {
             }
             if (!empty($this->data)) {
                     $jobData = $this->prepareJobForDB($this->data);
+                    $jobData['Job']['id'] = $id;
                     if ($this->Job->save($jobData)) {
                             $this->Session->setFlash(__('The job has been saved', true));
                             $this->redirect(array('action' => 'index'));
                     } else {
                             $this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
                     }
+                    $selectedSkills = $this->data['Version'];
             }
             if (empty($this->data)) {
                     $dbData = $this->Job->read(null, $id);
@@ -129,16 +165,15 @@ class JobsController extends AppController {
 		$this->redirect(array('action' => 'index'));
 	}
         
-        function unpublish($id = null) {
-            if (!$id) {
-                    $this->Session->setFlash(__('Invalid id for job', true));
-                    $this->redirect(array('action'=>'index'));
-            }
-            $this->Job->updateAll(array ('published' => 0),
-                                  array ('Job.id' => $id));
-            $this->redirect(array('action' => 'index'));
+    function unpublish($id = null) {
+        if (!$id) {
+                $this->Session->setFlash(__('Invalid id for job', true));
+                $this->redirect(array('action'=>'index'));
+        }
+        $this->Job->updateAll(array ('published' => 0),
+                              array ('Job.id' => $id));
+        $this->redirect(array('action' => 'index'));
 	}
-        
 
     
     private function prepareJobforDB($data) {
@@ -150,7 +185,7 @@ class JobsController extends AppController {
         // schedule
         if (isset($jobFormData['schedule1'])) {
             $jobFormData['schedule'] = $jobFormData['schedule1'];
-            if (isset($jobFormData['schedule2'])) {
+            if (isset($jobFormData['schedule2']) && $jobFormData['schedule2']) {
                 $jobFormData['schedule']  .= " :  {$jobFormData['schedule2']}";
                 unset($jobFormData['schedule2']);
             }

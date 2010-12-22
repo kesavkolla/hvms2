@@ -4,7 +4,9 @@ body {
     font-family: "frutiger linotype", "lucida grande", tahoma, verdana, arial, sans-serif;
     font-size: 13px;
 }
-
+a {
+    color: 243282;
+}
 select {
     font-family: "frutiger linotype", "lucida grande", tahoma, verdana, arial, sans-serif;
 }
@@ -56,6 +58,7 @@ dd {
 }
 #content {
     width: 1000px;
+    margin: 0px auto;
 }
 #container {
 	text-align: left;
@@ -140,6 +143,15 @@ div.message a {
     text-decoration: none;
     font-weight: bold;
     color: #4f5054;
+}
+
+.sub-header h2 {
+    float: left;
+}
+
+.sub-header .sub-menu {
+    float: left;
+    padding: 12px;
 }
 /* form css */
 form div {
@@ -291,9 +303,13 @@ form .downloadlink {
 /* jobs formatting */
 .job {
     width: 600px;
-    border-bottom: 2px inset #eee;
-    padding-top: 10px;
+    border: 1px solid #eee;
+    padding: 10px 30px 10px 10px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
 }
+
 .job .title {
     font-weight: bold;
 }
@@ -328,4 +344,15 @@ form .downloadlink {
 }
 #right-content {
     margin-left: 300px;
+}
+
+.flagged {
+    background: url('../img/interested_note.png') no-repeat 100% 50%;
+}
+
+.interest-link,
+.undo-interest-link {
+    font-size: 11px;
+    font-weight: bold;
+    text-align: right;
 }

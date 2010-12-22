@@ -1,7 +1,7 @@
 <?php
+    echo $html->script('register', array('inline' => false)); 
 
     echo $form->create('User', array('action' => 'register'));
-    echo ($this->element('register'));
     
     $types = array('cand' => 'Job Seeker', 'hosp' => 'Job Poster');
     echo $form->input('type', array(
@@ -9,21 +9,14 @@
                                     'empty' => false,
                                     'id' => 'register-type',
                                     'label' => 'Register as a ' ));
+
+    echo $form->input('username', array('id' => 'username',
+                                        'after' => '<span id="userinfo"></span>'));
+    echo $form->input('tmp_password', array('label' => 'Password', 'type' => 'password'));
+    echo $form->input('confirm_password', array('type' => 'password'));
+    echo $form->hidden('hospital_id', array('id' => 'hospital_id'));
     
-    echo '<div id="hosp-select" style="display:none">';
-    echo $form->input('hospital_id', array('options' => $hospitals,
-                                           'label' => 'Hospital'));
     echo '</div>';
     echo $form->end('Register');
 
 ?>
-<script type="text/javascript">
-$("#register-type").change ( function() {
-                                if ($("#register-type").val() == 'hosp') {
-                                    $("#hosp-select").show();   
-                                }
-                                else {
-                                    $("#hosp-select").hide();
-                                }
-                        });
-</script>

@@ -20,7 +20,7 @@
         $tabs = array();
         $tabs['Home'] = array ('controller' => 'pages', 'action' => 'display');
         if ($session->read('Auth.User.username')) {
-            $tabs['My Profile'] =  array('controller' => 'profiles', 'action' => 'edit', $session->read('Auth.User.id'));
+            $tabs['My Profile'] =  array('controller' => 'profiles', 'action' => 'edit');
             
             if ($session->read('Auth.User.type') == 'cand') {
                 $tabs['Find Jobs'] = array('controller' => 'jobs', 'action' => 'search');

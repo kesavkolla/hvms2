@@ -5,7 +5,8 @@ class User extends AppModel {
     public $actsAs = array('Containable');
     public $hasOne = 'Profile';
     public $belongsTo = 'Hospital';
-    public $hasMany = 'Job';
+    public $hasMany = array('Job',
+                            'Interest' );
 
     public $validate = array(
         'username' => array (

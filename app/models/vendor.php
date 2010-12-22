@@ -9,7 +9,11 @@ class Vendor extends AppModel {
 		$vendorList = $this->find('all',
 								  array(
 										'contain' => array(
-													 'Module.modulename' =>  'Version.versionname'),
+													 'Module.modulename' =>
+														array (
+															   'Version.versionname'
+															  )
+													 ),
 										'recursive' => 2
 										
 										)							  
