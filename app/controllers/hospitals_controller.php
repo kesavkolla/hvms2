@@ -2,7 +2,16 @@
 class HospitalsController extends AppController {
 
 	var $name = 'Hospitals';
-
+	
+	function hospNames() {
+		$this->autoRender = false;
+		if (isset($this->params['url']) && isset($this->params['url']['term'])) {
+            $hosp = $this->Hospital->find('list', array('conditions' => 'Hospital.name like "' . $this->params['url']['term'] . '%"',
+														'fields' => 'name'));
+			echo json_encode( array_values($hosp));		
+        }		
+	}
+	
 	function index() {
 		$this->Hospital->recursive = 0;
 		$this->set('hospitals', $this->paginate());

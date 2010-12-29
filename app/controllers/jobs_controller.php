@@ -25,62 +25,66 @@ class JobsController extends AppController {
     function search() {
         $selectedSkills = array();
         $jobs = array();
+        $joinsArray = array();
+        $conditions =  array (
+                                'Job.published' => 1,
+                                'Job.status' => 1,
+                               );
+         
         if ($this->data) {
-            $selectedSkills = $this->data['Version'];
+            $selectedSkills = isset($this->data['Module']) ? $this->data['Module'] : array();
+            $interested = $this->data['Job']['interested'];
+            $roles = $this->data['Job']['role'];
             
-            $jobs = $this->Job->find('all',
-                                     array (
-                                        'fields' => array (
-                                          'DISTINCT Job.id', 'Job.title', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id'  
-                                        ),
-                                        'joins' => array(
-                                                array(
-                                                    'table' => 'jobs_skills',
-                                                    'alias' => 'JobsSkills',
-                                                    'type' => 'inner',
-                                                    'foreignKey' => true,
-                                                    'conditions'=> array('JobsSkills.job_id = Job.id', 'JobsSkills.version_id' => $selectedSkills)
-                                                )),
-                                        'conditions' => array (
-                                                               'Job.published' => 1,
-                                                               'Job.status' => 1,
-                                                               'JobsSkills.version_id' => $selectedSkills
-                                                              ),
-                                        'limit' => 25,
-                                        'order' => array('Job.id DESC'),
-                                        'contain' => array (
-                                            'Version.versionname' => array (
-                                                'Module.modulename' => array(
-                                                        'Vendor.vendorname'
-                                                )
-                                            ),
-                                            'User' => array (
-                                                'Interest.interest_id'
-                                            )                                            
-                                        )                                        
-                                     ));
+            if ($selectedSkills) {
+                $joinsArray [] =  array(
+                                        'table' => 'jobs_skills',
+                                        'alias' => 'JobsSkills',
+                                        'type' => 'inner',
+                                        'foreignKey' => true,
+                                        'conditions'=> array('JobsSkills.job_id = Job.id', 'JobsSkills.module_id' => $selectedSkills)
+                                    );
+                                       
+            }
+          
+            if ($interested) {
+                $joinsArray [] = array (
+                                    'table' => 'interests',
+                                    'alias' => 'Interests',
+                                    'type' => 'inner',
+                                    'conditions' => array('Job.id = Interests.interest_id', 'Interests.user_id = ' . $this->Session->read('Auth.User.id'))
+                );
+           
+            }
+
+            if ($roles) {
+                $conditions['Job.role'] = $roles;
+            }
+
             $searchHeading = 'Search Results';
         }
         else {
-            $jobs = $this->Job->find('all',
-                     array (
-                        'conditions' => array (
-                                               'Job.published' => 1,
-                                               'Job.status' => 1                                              
-                                              ),
-                        'order' => array('Job.id DESC'),
-                         'contain' => array (
-                            'Version' => array (
-                                'fields' => array('id', 'versionname'),
-                                'Module.modulename' => array(
-                                        'Vendor.vendorname'
-                                )
-                            ),
-                            'User'                                    
-                        )                                        
-                     ));
             $searchHeading = 'All Jobs';
         }
+              
+        $jobs = $this->Job->find('all',
+                                 array (
+                                    'fields' => array (
+                                      'DISTINCT Job.id', 'Job.title', 'Job.jobtype', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id'  
+                                    ),
+                                    'joins' => $joinsArray,
+                                    'conditions' => $conditions,
+                                    'limit' => 25,
+                                    'order' => array('Job.id DESC'),
+                                    'contain' => array (
+                                            'Module.modulename' => array(
+                                                'Vendor.vendorname'
+                                        ),
+                                        'User' => array (
+                                            'Interest.interest_id'
+                                        )                                            
+                                    )                                        
+                                 ));
         $this->set('skills', $this->Vendor->getChainedSkills());
         $this->set('selectedSkills', $selectedSkills);
         $this->set('jobs', $jobs);
@@ -96,10 +100,8 @@ class JobsController extends AppController {
                                                  'Job.user_id' => $this->Session->read('Auth.User.id')
                                                  ),
                                                 'contain' => array(
-                                                    'Version.versionname' => array (
                                                         'Module.modulename' => array (
                                                             'Vendor.vendorname'
-                                                        )
                                                     ),
                                                     'User' => array (
                                                         'Hospital.name'
@@ -140,7 +142,7 @@ class JobsController extends AppController {
                     } else {
                             $this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
                     }
-                    $selectedSkills = $this->data['Version'];
+                    $selectedSkills = $this->data['Module'];
             }
             if (empty($this->data)) {
                     $dbData = $this->Job->read(null, $id);
@@ -149,7 +151,7 @@ class JobsController extends AppController {
                         $this->redirect(array('action' => 'index'));
                     }
                     $this->data = $this->prepareJobForDisplay($dbData);                        
-                    $selectedSkills = $this->getVersionIds($this->data['Version']);
+                    $selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			
             }
             $this->set('selectedSkills', $selectedSkills);
             $this->set('skills', $this->Vendor->getChainedSkills());         
@@ -186,15 +188,15 @@ class JobsController extends AppController {
         if (isset($jobFormData['schedule1'])) {
             $jobFormData['schedule'] = $jobFormData['schedule1'];
             if (isset($jobFormData['schedule2']) && $jobFormData['schedule2']) {
-                $jobFormData['schedule']  .= " :  {$jobFormData['schedule2']}";
+                $jobFormData['schedule']  .=  Configure::read('field.COMMA_ENCODE') .  $jobFormData['schedule2'];
                 unset($jobFormData['schedule2']);
             }
             unset($jobFormData['schedule1']); 
         }
         
         // role
-         if (isset($jobFormData['role-other']) && $jobFormData['role'] == 'Other') {
-            $jobFormData['role'] .= ': ' . $jobFormData['role-other'];
+        if (isset($jobFormData['role-other']) && $jobFormData['role'] == 'Other') {
+            $jobFormData['role'] .= Configure::read('field.COMMA_ENCODE') . $jobFormData['role-other'];
             unset($jobFormData['role-other']); 
         }
         
@@ -206,7 +208,7 @@ class JobsController extends AppController {
 
         // schedule
         if (isset($jobDataFromDB['schedule'])) {
-            $scheduleInfo = explode (':', $jobDataFromDB['schedule']);
+            $scheduleInfo = explode (Configure::read('field.COMMA_ENCODE'), $jobDataFromDB['schedule']);
             $jobDataFromDB['schedule1'] = trim($scheduleInfo[0]);
             if (isset($scheduleInfo[1])) {
                 $jobDataFromDB['schedule2'] = trim($scheduleInfo[1]);
@@ -215,7 +217,7 @@ class JobsController extends AppController {
         
         // role
         if (isset($jobDataFromDB['role'])) {
-            $roleInfo = explode (':', $jobDataFromDB['role']);
+            $roleInfo = explode (Configure::read('field.COMMA_ENCODE'), $jobDataFromDB['role']);
             $jobDataFromDB['role'] = trim($roleInfo[0]);
             if (isset($roleInfo[1])) {
                 $jobDataFromDB['role-other'] = trim($roleInfo[1]);
@@ -224,14 +226,6 @@ class JobsController extends AppController {
         return $data;
     }
     
-    private function getVersionIds($versionsArray) {
-        $versionIds = array();
-        foreach ($versionsArray as $version) {
-            $versionIds[] = $version['id'];
-        }
-        return $versionIds;
-    }
-
     /*
 	function admin_index() {
 		$this->Job->recursive = 0;

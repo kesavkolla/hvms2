@@ -1,6 +1,7 @@
 <div class="input other-select">
     <label for="schedule1"><?php echo $label ?></label>
 <?php
+    $options['Other'] = 'Other';
     $selectId = "{$this->params['controller']}-$fieldName";
     $textId = "{$this->params['controller']}-$fieldName-other";
     

@@ -2,10 +2,10 @@
 class InputsHelper extends AppHelper {
     function getJobTypes() {
         $jobTypes = array(
-            'permanent' => 'permanent',
-            'contract' => 'contract',
-            'contract w/ right to hire' => 'contract w/ right to hire',
-            'contract to hire' => 'contract to hire',
+            'permanent' => 'Permanent',
+            'contract' => 'Contract',
+            'contract w/ right to hire' => 'Contract w/ right to hire',
+            'contract to hire' => 'Contract to hire',
         );
         return $jobTypes;
     }
@@ -41,7 +41,6 @@ class InputsHelper extends AppHelper {
             'Project Manager' => 'Project Manager',
             'Interface Analyst' => 'Interface Analyst',
             'Report Writer' => 'Report Writer',
-            'Other' => 'Other'
         );
     }
     
@@ -52,8 +51,74 @@ class InputsHelper extends AppHelper {
                 '2 Weeks Notice' =>  '2 Weeks Notice',
                 '3 Weeks Notice' =>  '3 Weeks Notice',
                 '4 Weeks Notice' =>  '4 Weeks Notice',
-                'Other' => 'Other'
         );
+    }
+    
+    function getStatesList () {
+        $state_list = array('AL'=>"Alabama",  
+			'AK'=>"Alaska",  
+			'AZ'=>"Arizona",  
+			'AR'=>"Arkansas",  
+			'CA'=>"California",  
+			'CO'=>"Colorado",  
+			'CT'=>"Connecticut",  
+			'DE'=>"Delaware",  
+			'DC'=>"District Of Columbia",  
+			'FL'=>"Florida",  
+			'GA'=>"Georgia",  
+			'HI'=>"Hawaii",  
+			'ID'=>"Idaho",  
+			'IL'=>"Illinois",  
+			'IN'=>"Indiana",  
+			'IA'=>"Iowa",  
+			'KS'=>"Kansas",  
+			'KY'=>"Kentucky",  
+			'LA'=>"Louisiana",  
+			'ME'=>"Maine",  
+			'MD'=>"Maryland",  
+			'MA'=>"Massachusetts",  
+			'MI'=>"Michigan",  
+			'MN'=>"Minnesota",  
+			'MS'=>"Mississippi",  
+			'MO'=>"Missouri",  
+			'MT'=>"Montana",
+			'NE'=>"Nebraska",
+			'NV'=>"Nevada",
+			'NH'=>"New Hampshire",
+			'NJ'=>"New Jersey",
+			'NM'=>"New Mexico",
+			'NY'=>"New York",
+			'NC'=>"North Carolina",
+			'ND'=>"North Dakota",
+			'OH'=>"Ohio",  
+			'OK'=>"Oklahoma",  
+			'OR'=>"Oregon",  
+			'PA'=>"Pennsylvania",  
+			'RI'=>"Rhode Island",  
+			'SC'=>"South Carolina",  
+			'SD'=>"South Dakota",
+			'TN'=>"Tennessee",  
+			'TX'=>"Texas",  
+			'UT'=>"Utah",  
+			'VT'=>"Vermont",  
+			'VA'=>"Virginia",  
+			'WA'=>"Washington",  
+			'WV'=>"West Virginia",  
+			'WI'=>"Wisconsin",  
+			'WY'=>"Wyoming");
+        
+        return $state_list;
+    }
+    
+    public function getPublishedStatuses () {
+        return array (
+            0 => 'No',
+            1 => 'Yes');
+    }
+    
+    public function formatReplace($stringToFormat) {
+        return str_replace(Configure::read('field.COMMA_ENCODE'), ', ' , $stringToFormat); 
+
     }
 }
 ?>

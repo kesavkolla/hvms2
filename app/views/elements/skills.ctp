@@ -34,55 +34,34 @@ foreach ($data as $vendorData) {
     $moduleElementId = "modules$vendorId";
     $vendorOnclick = "\$('#$moduleElementId').toggle()";
     echo '<fieldset class="vendor"><legend  onclick="' . $vendorOnclick . '"> ' . $vendor . '</legend>';
-    echo "<div id=\"$moduleElementId\" style=\"display:none\">";
+    echo "<div id=\"$moduleElementId\" style=\"display:none\" class=\"clearfix\">";
+    $moduleShown = false;
 
-    foreach ($vendorData['Module'] as $moduleData) {
-        if (isset($moduleData['Version'])) {
-            $module = $moduleData['modulename'];
-            $moduleId = $moduleData['id'];
-            $versionElementId = "versions$moduleId";
-            $moduleOnclick = "\$('#$versionElementId').toggle()";
-            echo "<fieldset class=\"module\"><legend onclick=\"$moduleOnclick\">$module</legend>";
-            echo "<fieldset class=\"version\" id=\"$versionElementId\" style=\"display:none\">";
-            
-            $versionOptions = array();
-            $moduleShown = false;
-
-            foreach ($moduleData['Version'] as $versionData) {
-                $version = $versionData['versionname'];
-                $versionId = $versionData['id'];
-?>
-
-<cake:nocache>
+    foreach ($vendorData['Module'] as $moduleData) {        
+        $module = $moduleData['modulename'];
+        $moduleId = $moduleData['id'];
+?>       
+        <cake:nocache>
 <?php
-                $checked = false;
-                if ($selectedSkills && in_array($versionId, $selectedSkills)) {
-                    $checked = true;
-                    if (!$moduleShown) {
-                        echo '<script type="text/javascript">';
-                        echo "$(\"#$moduleElementId\").show();";
-                        echo "$(\"#$versionElementId\").show();";
-                        echo '</script>';
-                        $moduleShown = true;
-                    }
-                }
-?>
-<cake:nocache>
-
-
-<?php
-                echo '<div class="skill">';
-                echo $form->checkbox("Version.$versionId", array('value' => $versionId, 'hiddenField' => false, 'checked' => $checked));
-                echo $version;
-                echo '</div>';
+        $checked = false;
+        if ($selectedSkills && in_array($moduleId, $selectedSkills)) {
+            $checked = true;
+            if (!$moduleShown) {
+                echo '<script type="text/javascript">';
+                echo "$(\"#$moduleElementId\").show();";
+                echo '</script>';
+                $moduleShown = true;
             }
-
-            //echo $form->select('skill', $versionOptions, array('multiple' => true));
-                        
-            echo '</fieldset>'; // version
-            
-            echo '</fieldset>'; // module
         }
+?>
+<cake:nocache>
+
+<?php        
+        echo '<div class="skill">';
+        echo $form->checkbox("Module.$moduleId", array('value' => $moduleId, 'hiddenField' => false, 'checked' => $checked));
+        echo "<label for=\"Module$moduleId\">$module</label>";
+        echo '</div>';
+        $moduleShown = false;
     }
     echo '</div>';
     echo '</fieldset>'; // vendor

@@ -1,66 +1,67 @@
 <?php $curJob = $job['Job'] ;?>
-<div class="job <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curJob['id']?>">
+<div class="job clearfix <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curJob['id']?>">
 		<div class="title"><?php echo $curJob['title']; ?></div>
+        <?php
+        if (isset($curJob['location'])) { 
+            echo '<div class="location">(' . $curJob['location'] . ')   </div>';
+        }
+        ?>
+        
 		<div class="description">
 			<?php echo $curJob['description']; ?>
 		</div>
 		<div class="details">
-            <dl class="clearfix">
-                <dt> ID </dt> <dd><?php echo $curJob['id']?> <span style="color:red; font-style:italic">delete before release </span></dd>
-                <?php if (isset($curJob['startdate'])) { ?>
-                <dt class="timeframe">Details</dt>
-                <dd class="timeframe">
-                    <?php echo $time->format($curJob['startdate']); ?>
-                    <?php
-                        if (isset($curJob['enddate'])) {
-                            echo ' to ' . $time->format($curJob['enddate']); 
-                        } ?>					
-                </dd>
-                <?php } ?>
+            <div>ID : <?php echo $curJob['id']?> <span style="color:red; font-style:italic">delete before release </span></div>
+            <h5 class="list">Employment Details:</h5>
+            <?php
+                if (isset($curJob['startdate'])) { 
+                    echo '<div class="timeframe">';
+                    echo $time->format($curJob['startdate']); 
                 
-                <?php if (isset($curJob['location'])) { ?>
-                <dt class="location">Location</dt>
-                <dd class="location">
-                        <?php echo $curJob['location']; ?>
-                </dd>
-                <?php } ?>
+                    if (isset($curJob['enddate'])) {
+                        echo ' to ' . $time->format($curJob['enddate']); 
+                    }
+                    echo '</div>';
+                }
+                
+                if (isset($curJob['schedule'])) {
+                    echo '<div class="schedule">';
+                    echo $this->Inputs->formatReplace($curJob['schedule']); 
+                    if (isset($curJob['expensespaid']) && $curJob['expensespaid']) { 
+                        echo ' (expenses paid)';
+                    }
+                    echo '</div>';
+                }
 
-
-                <?php if (isset($curJob['schedule'])) { ?>
-                <dt class="schedule">Schedule</dt>
-                <dd class="schedule">
-                    <?php
-                        echo $curJob['schedule']; 
-                        if (isset($curJob['expensespaid']) && $curJob['expensespaid']) { 
-                            echo ' (expenses paid)';
-                        }
-                    ?>
-                </dd>
-                <?php } ?>
-
-                <?php if (isset($curJob['role'])) { ?>
-                <dt class="role">Role</dt>
-                <dd>
-                        <?php echo $curJob['role']; ?>
-                </dd>
-                <?php } ?>
-                     
-    			<dt class="skills">Skills</dt>
-                <dd class="skills">
-                    <ul>
-    			<?php
-                    foreach ($job['Version'] as $skillInfo) {
+                if (isset($curJob['jobtype'])) {
+                    echo '<div class="job-type">';
+                    echo $curJob['jobtype'];
+                    echo '</div>';
+                }
+                
+            ?>
+            
+            <div class="roles-skills clearfix">
+                <h5 class="list">Experience Required:</h5>
+                <?php
+                if (isset($curJob['role'])) {
+                    echo '<div class="role">' . $this->Inputs->formatReplace($curJob['role']) . ' role</div>';
+                }
+                ?>
+                <div class="skills">
+                <ul>
+                <?php
+                    foreach ($job['Module'] as $skillInfo) {
                         $skill = '';
-                        $vendorName = $skillInfo['Module']['Vendor']['vendorname'];
-                        $moduleName = $skillInfo['Module']['modulename'];
-                        $versionName = $skillInfo['versionname'];
-                        $skill = "$vendorName $moduleName $versionName";
+                        $vendorName = $skillInfo['Vendor']['vendorname'];
+                        $moduleName = $skillInfo['modulename'];
+                        $skill = "$vendorName $moduleName";
                         echo "<li class=\"skill\">{$skill} </li>";
-    			    }
-    			?>
-                    </ul>
-                </dd>
-			</dl>
+                    }
+                    ?>
+                </ul>
+                </div>						
+            </div>
 		</div>
     <?php
         echo $this->element('interest', array('userFlagged' => $userFlagged,

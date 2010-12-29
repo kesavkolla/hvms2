@@ -4,6 +4,22 @@
 	<?php echo $this->Form->create(null, array('id' => 'JobSearchForm'));?>
 	<h3>Narrow Your Search</h3>
 	<div class="input">
+		<?php echo $this->Form->checkbox('interested'); ?>
+		Only show jobs I'm interested in
+	</div>
+	
+	<?php
+	echo $this->Form->input('role', array(
+										 'type' => 'select',
+										 'multiple' => true,
+										 'size' => 4,
+										 'label' => 'Role',
+										 'class' => 'multi-select',
+										 'options' => $this->Inputs->getJobRoles()));
+
+	?>
+	
+	<div class="input">
 		<label>Skills Required</label>
 		<div class="skillbox">
 		<?php echo $this->element('skills', array('data' => $skills, 'selectedSkills' => $selectedSkills)) ?>

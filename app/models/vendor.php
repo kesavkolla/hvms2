@@ -3,6 +3,7 @@ class Vendor extends AppModel {
 	public $name = 'Vendor';
 	public $displayField = 'vendorname';
 	public $hasMany = array('Module');
+	public $actsAs = array('Containable');
 	
 	function getChainedSkills () {
 		$result = array();
@@ -13,9 +14,7 @@ class Vendor extends AppModel {
 														array (
 															   'Version.versionname'
 															  )
-													 ),
-										'recursive' => 2
-										
+													 ),										
 										)							  
 								 );
 		return ($vendorList);

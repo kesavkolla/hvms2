@@ -2,14 +2,16 @@
 
 class Profile extends AppModel {
     public $name = 'Profile';                
+    public $actsAs = array('Containable');
     public $belongsTo = 'User';
+    
     public $hasAndBelongsToMany = array(
-        'Version' =>
+        'Module' =>
             array(
-                'className'              => 'Version',
+                'className'              => 'Module',
                 'joinTable'              => 'profiles_skills',
                 'foreignKey'             => 'profile_id',
-                'associationForeignKey'  => 'version_id',
+                'associationForeignKey'  => 'module_id',
                 'unique'                 => true,
             )
     );

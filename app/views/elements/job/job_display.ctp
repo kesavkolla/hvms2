@@ -14,7 +14,7 @@
                     <?php } ?>
                     
                     <?php if (isset($curJob['startdate'])) { ?>
-                    <dt class="timeframe">Schedule</dt>
+                    <dt class="timeframe">Timeframe</dt>
                     <dd class="timeframe">
                         <?php echo $time->format($curJob['startdate']); ?>
                         <?php
@@ -35,7 +35,7 @@
                     <?php if (isset($curJob['schedule'])) { ?>
                     <dt class="schedule">Schedule</dt>
                     <dd class="schedule">
-                            <?php echo $curJob['schedule']; ?>
+                            <?php echo $this->Inputs->formatReplace($curJob['schedule']); ?>
                     </dd>
                     <?php } ?>
 
@@ -61,21 +61,20 @@
                     <?php if (isset($curJob['role'])) { ?>
                     <dt class="role">Role</dt>
                     <dd>
-                            <?php echo $curJob['role']; ?>
+                            <?php echo $this->Inputs->formatReplace($curJob['role']); ?>
                     </dd>
                     <?php } ?>
-                 
+
         <dt class="skills">Skills</dt>
                     <dd class="skills">
         <?php
-                        foreach ($job['Version'] as $skillInfo) {
+                        foreach ($job['Module'] as $skillInfo) {
                             $skill = '';
-                            $vendorName = $skillInfo['Module']['Vendor']['vendorname'];
-                            $moduleName = $skillInfo['Module']['modulename'];
-                            $versionName = $skillInfo['versionname'];
-            $skill = "$vendorName $moduleName $versionName";
-            echo "<div class=\"skill\">{$skill} </div>";
-            }
+                            $vendorName = $skillInfo['Vendor']['vendorname'];
+                            $moduleName = $skillInfo['modulename'];
+                            $skill = "$vendorName $moduleName";
+                            echo "<div class=\"skill\">{$skill} </div>";
+                        }
         ?>
                     </dd>
         </dl>

@@ -25,7 +25,19 @@ class ProfilesController extends AppController {
 			$this->Session->setFlash(__('Invalid profile', true));
 			$this->redirect('/');
 		}
-		$this->set('profile', $this->Profile->findByUserId($uid));
+		$this->set('profile', $this->Profile->find('first',
+												   array(
+													'conditions' => array (
+														'Profile.user_id' => $uid
+														),
+													'contain' => array (
+													   'Module.modulename' => 'Vendor.vendorname'
+														)
+													)
+												   ));
+												   
+		$this->set('userType', $this->Session->read('Auth.User.type'));
+		
 	}
 
 	function edit() {
@@ -43,7 +55,8 @@ class ProfilesController extends AppController {
 		}
 		if (!empty($this->data)) {
 			$fileUpload = $this->fileUpload();
-			if (!($fileErrors = $fileUpload['error'])) {
+			$fileErrors = $fileUpload ? $fileUpload['error'] : null;
+			if (!$fileErrors) {
 				if ($existingProfile = $this->Profile->findByUserId($uid)) {
 					if ($existingProfile['Profile']['user_id'] == $uid) {
 						$this->data['Profile']['id'] = $existingProfile['Profile']['id'];
@@ -63,7 +76,7 @@ class ProfilesController extends AppController {
 					$this->Session->setFlash(__('The profile could not be saved. Please, try again.', true));
 				}
 			}
-			else {
+			else if (isset($fileErrors)) {
 				$this->Profile->invalidate('resume_upload', $fileErrors);
 			}
 		}
@@ -72,17 +85,12 @@ class ProfilesController extends AppController {
 										 'Profile.user_id' => $uid
 										 ),
 										'contain' => array(
-											'User'  => array (
-												'Hospital.name'
-											),
-											'Version.versionname' => array (
-												'Module.modulename' => array (
-													'Vendor.vendorname'
-												)
+											'User.type',
+											'Module.id' => array()
 										),
 									)
-								)
 							);
+		
 		$dbData = $profileDBData ? $profileDBData[0] : null;
 		if ($dbData) {
 			if ($dbData['Profile']['resume_name']) {
@@ -94,7 +102,7 @@ class ProfilesController extends AppController {
 				fclose($fp);
 			}
 			$this->data = $this->prepareProfileForDisplay($dbData);
-			$selectedSkills = $this->getVersionIds($this->data['Version']);
+			$selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			
 		}
 
 		$this->set('selectedSkills', isset($selectedSkills) ? $selectedSkills : array());
@@ -141,13 +149,13 @@ class ProfilesController extends AppController {
 			
 			// startavailability
 			 if (isset($profileFormData['startavailability-other']) && $profileFormData['startavailability'] == 'Other') {
-				$profileFormData['startavailability'] .= ': ' . $profileFormData['startavailability-other'];
+				$profileFormData['startavailability'] .= Configure::read('field.COMMA_ENCODE') . $profileFormData['startavailability-other'];
 				unset($profileFormData['startavailability-other']); 
 			}
 			
 			// role
 			 if (isset($profileFormData['role-other']) && $profileFormData['role'] == 'Other') {
-				$profileFormData['role'] .= ': ' . $profileFormData['role-other'];
+				$profileFormData['role'] .= Configure::read('field.COMMA_ENCODE') . $profileFormData['role-other'];
 				unset($profileFormData['role-other']); 
 			}
 			
@@ -159,7 +167,7 @@ class ProfilesController extends AppController {
 
 		// startavailability
 		if (isset($profileDataFromDB['startavailability'])) {
-			$startavailabilityInfo = explode (':', $profileDataFromDB['startavailability']);
+			$startavailabilityInfo = explode (Configure::read('field.COMMA_ENCODE'), $profileDataFromDB['startavailability']);
 			$profileDataFromDB['startavailability'] = trim($startavailabilityInfo[0]);
 			if (isset($startavailabilityInfo[1])) {
 				$profileDataFromDB['startavailability-other'] = trim($startavailabilityInfo[1]);
@@ -168,7 +176,7 @@ class ProfilesController extends AppController {
 		
 		// role
 		if (isset($profileDataFromDB['role'])) {
-			$roleInfo = explode (':', $profileDataFromDB['role']);
+			$roleInfo = explode (Configure::read('field.COMMA_ENCODE'), $profileDataFromDB['role']);
 			$profileDataFromDB['role'] = trim($roleInfo[0]);
 			if (isset($roleInfo[1])) {
 				$profileDataFromDB['role-other'] = trim($roleInfo[1]);
@@ -177,15 +185,7 @@ class ProfilesController extends AppController {
 		return $data;
 	}
 	
-	// repeated from jobs_controller,
-	// not DRY, but doesn't seem worth making a component for
-	private function getVersionIds($versionsArray) {
-		$versionIds = array();
-		foreach ($versionsArray as $version) {
-			$versionIds[] = $version['id'];
-		}
-		return $versionIds;
-	}
+
 /*
 	function admin_index() {
 		$this->Profile->recursive = 0;

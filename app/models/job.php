@@ -5,12 +5,12 @@ class Job extends AppModel {
     public $actsAs = array('Containable');
     public $belongsTo = 'User';
     public $hasAndBelongsToMany = array(
-        'Version' =>
+        'Module' =>
             array(
-                'className'              => 'Version',
+                'className'              => 'Module',
                 'joinTable'              => 'jobs_skills',
                 'foreignKey'             => 'job_id',
-                'associationForeignKey'  => 'version_id',
+                'associationForeignKey'  => 'module_id',
                 'unique'                 => true,
             )
     );
