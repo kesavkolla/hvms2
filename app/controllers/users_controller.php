@@ -6,7 +6,7 @@ class UsersController extends AppController {
     public $components = array('Auth', /*'Security',*/ 'Session', 'Email', 'Cookie', 'RequestHandler');
     
     function beforeFilter() {
-            $this->Auth->allow('index', 'register', 'register_cand', 'register_hosp', 'confirm', 'checkEmail');
+            $this->Auth->allow('forgot', 'index', 'register', 'register_cand', 'register_hosp', 'confirm', 'checkEmail', 'auto_reset_pw');
             $this->Auth->autoRedirect = false;
             parent::beforeFilter();
             //$this->Security->blackHoleCallback = 'forceSsl';
@@ -129,23 +129,40 @@ class UsersController extends AppController {
     
     // TODO: change echo's to flashes and actually generate the email
     function forgot () {
-        if ($resetLink = $this->generateResetPwLink()) {
-            echo 'auto_reset_pw/' . $resetLink;
+        if ($resetInfo = $this->generateResetPwLink()) {
+            $user = $this->data['User'];
+            $this->set('username', $user['username']);
+            $this->set('resetLink', $resetInfo['confirm_reset_link']);
+            $this->set('otp', $resetInfo['otp']);
+
+            $this->Email->to = $user['username'];
+            $this->Email->from = 'HealthVMS <noreply@healthvms.com>'; // TODO - put in config
+            $this->Email->subject = 'Password reset request';
+            $this->Email->template = 'reset_pw';
+            
+            $this->Email->delivery = 'debug';
+    
+            $this->Email->send();
+            pr($this->Session->read('Message.email'));
+
         }
     }
 
     function auto_reset_pw($OTP, $expiry, $userID)  {
         if (time() > $expiry) {
-            $this->Session->setFlash('This password link has expired. Please generate an new one.');
+            $this->Session->setFlash('This password link has expired. Please generate a new one.');
             $this->redirect('/users/forgot');
         }
+        $this->User->recursive = -1;
         $user = $this->User->findById($userID);
-        pr($this->generateOTP($expiry, $userID, $user['User']['password'])); // TODO - remove this line
+        
         if ($OTP == $this->generateOTP($expiry, $userID, $user['User']['password'])) {
             $user['User']['tmp_password'] = $OTP;
             $user['User']['confirm_password'] = $OTP;
             if ($this->User->save($user)) {
-                $this->Session->setFlash('We have successfully reset your password. You should change it immediately something that you can remember.');
+                $user['User']['password'] = Security::hash($user['User']['tmp_password'], null, true);
+                $this->Auth->login($user);
+                $this->Session->setFlash('Your password has been changed. Please change it to a password of your choice below.');
                 $this->redirect('/users/resetpw');    
             }
             else {
@@ -174,7 +191,11 @@ class UsersController extends AppController {
             $userID = $user['User']['id'];
             $OTP = $this->generateOTP($expiry, $userID, $user['User']['password']);
             $pwLink = "$OTP/$expiry/$userID";
-            return $pwLink;
+            
+            $newPw = array();
+            $newPw['confirm_reset_link'] = $pwLink;
+            $newPw['otp'] = $OTP;
+            return $newPw;
         }
         return null;
     }
