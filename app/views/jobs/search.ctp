@@ -34,7 +34,7 @@
 	<?php
 	foreach ($jobs as $job) {
 		$userFlagged = in_array($job['Job']['id'], $userInterestIds);
-		echo ($this->element('job/job_display_abbrev',
+		echo ($this->element('job/job_display_public',
 				     array('job' => $job,
 						   'userFlagged' => $userFlagged)));
 	}

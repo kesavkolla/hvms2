@@ -2,9 +2,9 @@
 class JobsController extends AppController {
 
 	public $name = 'Jobs';
-        public $uses = array ('Job', 'Vendor');
-        public $components = array('Auth');
-        public $helpers = array('Inputs', 'Number', 'Time');
+    public $uses = array ('Job', 'Vendor');
+    public $components = array('Auth');
+    public $helpers = array('Inputs', 'Number', 'Time');
         
     function beforeFilter() {
         // all actions except searching are restricted.

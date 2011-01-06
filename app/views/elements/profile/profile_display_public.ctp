@@ -1,7 +1,7 @@
 <?php $curProfile = $profile['Profile']; ?>
 <?php $userType = $this->Session->read('Auth.User.type'); ?>
 
-<div class="profile clearfix">
+<div class="profile clearfix  <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curProfile['id']?>">
 	<?php
 		if (isset($curProfile['title'])) {
 			echo '<div class="title">' . $curProfile['title'] . '</div>';
@@ -58,4 +58,8 @@
 		</ul>
 		</div>						
 	</div>
+	<?php
+        echo $this->element('interest', array('userFlagged' => $userFlagged,
+                                              'interestId' => $curProfile['id']));
+    ?>
 </div>

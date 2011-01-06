@@ -1,5 +1,6 @@
 <?php
 class ProfilesController extends AppController {
+    public $uses = array ('Profile', 'Vendor');	
 	public $name = 'Profiles';
 	public $helpers = array('Inputs');
 
@@ -15,10 +16,90 @@ class ProfilesController extends AppController {
 		}
 	}
 	
-	function search() {
-		$this->set('profiles', $this->paginate());
-	}
+    function search() {
+        $selectedSkills = array();
+        $profiles = array();
+        $joinsArray = array();
+        $conditions =  array (
+                                'Profile.published' => 1,
+                                'Profile.status' => 1,
+								'Profile.company_id !=' . $this->Session->read('Auth.User.hospital_id') // exclude employees from the searcher's company
+                               );
+		
+		$joinsArray [] =  array(
+						'table' => 'users',
+						'alias' => 'Users',
+						'type' => 'inner',
+						'foreignKey' => true,
+						'conditions'=> array('Users.id = Profile.user_id',
+											 'Users.type = "cand"',
+											)
+					);
 
+        if ($this->data) {
+            $selectedSkills = isset($this->data['Module']) ? $this->data['Module'] : array();
+            $interested = $this->data['Profile']['interested'];
+            $roles = $this->data['Profile']['role'];
+            
+            if ($selectedSkills) {
+                $joinsArray [] =  array(
+                                        'table' => 'profiles_skills',
+                                        'alias' => 'ProfilesSkills',
+                                        'type' => 'inner',
+                                        'foreignKey' => true,
+                                        'conditions'=> array('ProfilesSkills.profile_id = Profile.id', 'ProfilesSkills.module_id' => $selectedSkills)
+                                    );
+                                       
+            }
+          
+            if ($interested) {
+                $joinsArray [] = array (
+                                    'table' => 'interests',
+                                    'alias' => 'Interests',
+                                    'type' => 'inner',
+                                    'conditions' => array('Profile.id = Interests.interest_id', 'Interests.user_id = ' . $this->Session->read('Auth.User.id'))
+                );
+           
+            }
+
+            if ($roles) {
+                $conditions['Profile.role'] = $roles;
+            }
+
+            $searchHeading = 'Search Results';
+        }
+        else {
+            $searchHeading = 'All Profiles';
+        }
+              
+        $profiles = $this->Profile->find('all',
+                                 array (
+                                    'fields' => array (
+                                      'DISTINCT Profile.id', 'Profile.title', 'Profile.role', 'Profile.comment', 'Profile.blurb', 'Profile.user_id'  
+                                    ),
+                                    'joins' => $joinsArray,
+                                    'conditions' => $conditions,
+                                    'limit' => 25,
+                                    'order' => array('Profile.id DESC'),
+                                    'contain' => array (
+                                            'Module.modulename' => array(
+                                                'Vendor.vendorname'
+                                        ),
+                                        'User' => array (
+                                            'Interest.interest_id'
+                                        )                                            
+                                    )                                        
+                                 ));
+        $this->set('skills', $this->Vendor->getChainedSkills());
+        $this->set('selectedSkills', $selectedSkills);
+        $this->set('profiles', $profiles);
+        $this->set('searchHeading', $searchHeading);
+
+        $interestInstance = ClassRegistry::init('Interest');
+        $this->set('userInterestIds', $interestInstance->getInterestIdsForUser($this->Session->read('Auth.User.id')));
+    }
+	
+	
 	function view() {
 		$uid = $this->Session->read('Auth.User.id');
 		if (!$uid) {
@@ -36,7 +117,6 @@ class ProfilesController extends AppController {
 													)
 												   ));
 												   
-		$this->set('userType', $this->Session->read('Auth.User.type'));
 		
 	}
 
