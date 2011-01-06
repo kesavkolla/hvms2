@@ -53,7 +53,7 @@ class UsersController extends AppController {
     
     function register() {
         if ($this->Auth->user()) {
-            $this->redirect(Auth.redirect());
+            $this->redirect($this->Auth->redirect());
         }
         if ($this->data) {
             $this->User->create($this->data);

@@ -1,6 +1,8 @@
 <div id="header">
     <div id="logo">
+        <a href="/hvms/">
         <img src="<?php echo $this->webroot ?>img/logo.png" alt="HealthVMS" title="HealthVMS" />
+        </a>
     </div>
     
     <div id="mast">

@@ -69,6 +69,7 @@ class ProfilesController extends AppController {
 				}
 				
 				$profileData = $this->prepareProfileForDB($this->data);
+				
 				if ($this->Profile->save($profileData)) {
 					$this->Session->setFlash(__('Your profile has been saved', true));
 				}
@@ -85,8 +86,8 @@ class ProfilesController extends AppController {
 										 'Profile.user_id' => $uid
 										 ),
 										'contain' => array(
-											'User.type',
-											'Module.id' => array()
+											'Module.id' => array(),
+											'User'
 										),
 									)
 							);
@@ -143,7 +144,8 @@ class ProfilesController extends AppController {
 
 	private function prepareProfileforDB($data) {
 			// add user id
-			$data['Profile']['user_id'] = $this->Session->read('Auth.User.id');
+			$uid = $this->Session->read('Auth.User.id');
+			$data['Profile']['user_id'] = $uid;
 	
 			$profileFormData = &$data['Profile'];
 			
@@ -159,6 +161,13 @@ class ProfilesController extends AppController {
 				unset($profileFormData['role-other']); 
 			}
 			
+			if (isset($profileFormData['currentcompany']) && $profileFormData['currentcompany']) {
+				$hospital = ClassRegistry::init('Hospital')->
+							findByName(trim($profileFormData['currentcompany']));
+
+				$companyId = $hospital ? $hospital['Hospital']['id'] : null;
+				$data['Profile']['company_id'] = $companyId;
+			}
 			return $data;
 	}
 

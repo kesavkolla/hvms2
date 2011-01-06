@@ -22,7 +22,7 @@ class JobsController extends AppController {
         }
     }
     
-    function search() {
+    function search() {        
         $selectedSkills = array();
         $jobs = array();
         $joinsArray = array();

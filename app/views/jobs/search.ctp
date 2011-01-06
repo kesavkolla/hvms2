@@ -3,7 +3,7 @@
 <div id="left-nav">
 	<?php echo $this->Form->create(null, array('id' => 'JobSearchForm'));?>
 	<h3>Narrow Your Search</h3>
-	<div class="input">
+	<div class="input interested">
 		<?php echo $this->Form->checkbox('interested'); ?>
 		Only show jobs I'm interested in
 	</div>
