@@ -40,8 +40,8 @@
 	<div class="roles-skills clearfix">
 		<h5>Experience:</h5>
 		<?php
-		if (isset($curProfile['role'])) {
-			echo '<div class="role">' . $this->Inputs->formatReplace($curProfile['role']) . '</div>';
+		if (isset($profile['ProfileRole'])) {
+			echo '<div class="role">' . $this->Inputs->formatRoles($profile['ProfileRole']) . '</div>';
 		}
 		?>
 		<div class="skills">

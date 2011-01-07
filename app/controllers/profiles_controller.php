@@ -47,7 +47,8 @@ class ProfilesController extends AppController {
                                         'alias' => 'ProfilesSkills',
                                         'type' => 'inner',
                                         'foreignKey' => true,
-                                        'conditions'=> array('ProfilesSkills.profile_id = Profile.id', 'ProfilesSkills.module_id' => $selectedSkills)
+                                        'conditions'=> array('ProfilesSkills.profile_id' => 'Profile.id',
+															 'ProfilesSkills.module_id' => $selectedSkills)
                                     );
                                        
             }
@@ -63,8 +64,13 @@ class ProfilesController extends AppController {
             }
 
             if ($roles) {
-                $conditions['Profile.role'] = $roles;
-            }
+                $joinsArray [] = array (
+                                    'table' => 'profile_roles',
+                                    'alias' => 'ProfileRoles',
+                                    'type' => 'inner',
+                                    'conditions' => array('Profile.id = ProfileRoles.profile_id',
+														  'ProfileRoles.role' => $roles)
+                );            }
 
             $searchHeading = 'Search Results';
         }
@@ -75,7 +81,7 @@ class ProfilesController extends AppController {
         $profiles = $this->Profile->find('all',
                                  array (
                                     'fields' => array (
-                                      'DISTINCT Profile.id', 'Profile.title', 'Profile.role', 'Profile.comment', 'Profile.blurb', 'Profile.user_id'  
+                                      'DISTINCT Profile.id', 'Profile.title', 'Profile.comment', 'Profile.blurb', 'Profile.user_id'  
                                     ),
                                     'joins' => $joinsArray,
                                     'conditions' => $conditions,
@@ -83,11 +89,12 @@ class ProfilesController extends AppController {
                                     'order' => array('Profile.id DESC'),
                                     'contain' => array (
                                             'Module.modulename' => array(
-                                                'Vendor.vendorname'
+                                                'Vendor.vendorname',
                                         ),
                                         'User' => array (
                                             'Interest.interest_id'
-                                        )                                            
+                                        ),
+										'ProfileRole'
                                     )                                        
                                  ));
         $this->set('skills', $this->Vendor->getChainedSkills());
@@ -112,7 +119,8 @@ class ProfilesController extends AppController {
 														'Profile.user_id' => $uid
 														),
 													'contain' => array (
-													   'Module.modulename' => 'Vendor.vendorname'
+													   'Module.modulename' => 'Vendor.vendorname',
+													   'ProfileRole'
 														)
 													)
 												   ));
@@ -134,6 +142,7 @@ class ProfilesController extends AppController {
 			$this->redirect('/');
 		}
 		if (!empty($this->data)) {
+			pr ($this->data);
 			$fileUpload = $this->fileUpload();
 			$fileErrors = $fileUpload ? $fileUpload['error'] : null;
 			if (!$fileErrors) {
@@ -150,7 +159,7 @@ class ProfilesController extends AppController {
 				
 				$profileData = $this->prepareProfileForDB($this->data);
 				
-				if ($this->Profile->save($profileData)) {
+				if ($this->Profile->saveAll($profileData)) {
 					$this->Session->setFlash(__('Your profile has been saved', true));
 				}
 				else {
@@ -222,25 +231,35 @@ class ProfilesController extends AppController {
 			return $retval;
 	}
 
-	private function prepareProfileforDB($data) {
+	private function prepareProfileForDB($data) {
 			// add user id
 			$uid = $this->Session->read('Auth.User.id');
 			$data['Profile']['user_id'] = $uid;
 	
 			$profileFormData = &$data['Profile'];
-			
+
 			// startavailability
 			 if (isset($profileFormData['startavailability-other']) && $profileFormData['startavailability'] == 'Other') {
 				$profileFormData['startavailability'] .= Configure::read('field.COMMA_ENCODE') . $profileFormData['startavailability-other'];
 				unset($profileFormData['startavailability-other']); 
 			}
 			
-			// role
-			 if (isset($profileFormData['role-other']) && $profileFormData['role'] == 'Other') {
-				$profileFormData['role'] .= Configure::read('field.COMMA_ENCODE') . $profileFormData['role-other'];
-				unset($profileFormData['role-other']); 
+			// roles
+			if (isset($profileFormData['role']))
+			{
+				$roleData = $profileFormData['role'] ? $profileFormData['role'] : array();
+				
+				$profileRoleData = array();
+				foreach ($roleData as $role) {
+					if (isset($profileFormData['role-other']) && $role == 'Other') {
+						$role .= Configure::read('field.COMMA_ENCODE') . $profileFormData['role-other'];
+					}
+					$profileRoleData[] = array('role' => $role);
+				}
+				$data['ProfileRole'] = $profileRoleData;
 			}
 			
+			// check if currencompany matches a hospital in our list
 			if (isset($profileFormData['currentcompany']) && $profileFormData['currentcompany']) {
 				$hospital = ClassRegistry::init('Hospital')->
 							findByName(trim($profileFormData['currentcompany']));
@@ -248,10 +267,13 @@ class ProfilesController extends AppController {
 				$companyId = $hospital ? $hospital['Hospital']['id'] : null;
 				$data['Profile']['company_id'] = $companyId;
 			}
+			
+			pr ($data);
 			return $data;
 	}
 
 	private function prepareProfileForDisplay ($data) {
+		pr ($data); exit;
 		$profileDataFromDB = &$data['Profile'];
 
 		// startavailability

@@ -116,6 +116,30 @@ class InputsHelper extends AppHelper {
             1 => 'Yes');
     }
     
+    /* dbRolesArray is of the form:
+      array (
+            [0] => Array
+                (
+                    [role] => Interface Analyst
+                )
+
+            [1] => Array
+                (
+                    [role] => Other.billing analyst
+                )
+
+            [2] => Array
+                (
+                    [role] => Report Writer
+                )
+      )
+    */
+    public function formatRoles($dbRolesArray) {
+        $rolesArray = Set::classicExtract($dbRolesArray, '{n}.role');
+        $rolesString = implode('; ', $rolesArray);
+        return $this->formatReplace($rolesString);
+    }
+     
     public function formatReplace($stringToFormat) {
         return str_replace(Configure::read('field.COMMA_ENCODE'), ', ' , $stringToFormat); 
 

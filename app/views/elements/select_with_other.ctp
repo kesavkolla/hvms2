@@ -4,8 +4,18 @@
     $options['Other'] = 'Other';
     $selectId = "{$this->params['controller']}-$fieldName";
     $textId = "{$this->params['controller']}-$fieldName-other";
+
+    $selectConfig = array('id' => "$selectId");
     
-    echo $this->Form->select("$fieldName", $options, null, array('id' => "$selectId" ));
+    if (isset($size)) {
+        $selectConfig['size'] = $size;
+    }
+    
+    if (isset($multiple)) {
+        $selectConfig['multiple'] = $multiple;
+    }  
+    
+    echo $this->Form->select("$fieldName", $options, null, $selectConfig);
     echo $this->Form->text("$fieldName-other" , array('id' => "$textId", 'style' => 'display:none' ));
 ?>
 </div>
@@ -17,7 +27,7 @@
     $('#<?php echo $selectId ?>').change(function () {
         var selectElem = $('#<?php echo $selectId ?>');
         var textElem = $('#<?php echo $textId ?>');
-        if (selectElem.val() == 'Other') {
+        if (selectElem.val().indexOf('Other') >= 0) {
             textElem.show();
         }
         else {

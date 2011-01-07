@@ -11,9 +11,10 @@ a {
 input, select {
     font-family: "frutiger linotype", "lucida grande", tahoma, verdana, arial, sans-serif;
     padding: 2px;
-    height: 25px;
+    min-height: 25px;
     margin: 0px;
 }
+
 input {
     width: 50%;
 }
@@ -218,9 +219,6 @@ input, textarea {
 	width: 200px;
 }
 
-select[multiple=multiple] {
-	width: 100%;
-}
 option {
 	font-size: 120%;
 	padding: 0 3px;

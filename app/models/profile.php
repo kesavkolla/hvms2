@@ -4,7 +4,8 @@ class Profile extends AppModel {
     public $name = 'Profile';                
     public $actsAs = array('Containable');
     public $belongsTo = 'User';
-    
+    public $hasMany = 'ProfileRole';
+
     public $hasAndBelongsToMany = array(
         'Module' =>
             array(

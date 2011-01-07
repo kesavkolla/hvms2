@@ -42,8 +42,11 @@
 
 			echo ($this->element('select_with_other',
 								 array('label' => 'Role',
-									   'options' => $this->Inputs->getJobRoles(),
-									   'fieldName' => 'role')));
+										'options' => $this->Inputs->getJobRoles(),
+										'fieldName' => 'role',
+										'multiple' => true,
+										'size' => 4,
+									   )));
 			echo ($this->element('select_with_other',
 								 array('label' => 'Start Availability',
 									   'options' => $this->Inputs->getCandidateNotice(),
