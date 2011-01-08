@@ -39,4 +39,13 @@
 						   'userFlagged' => $userFlagged)));
 	}
 	?>
+	<div class="pager">
+		<!-- Shows the page numbers -->
+		<?php echo $this->Paginator->numbers(); ?>
+		<!-- Shows the next and previous links -->
+		<?php echo $this->Paginator->prev('« Previous', null, null, array('class' => 'disabled')); ?>
+		<?php echo $this->Paginator->next('Next »', null, null, array('class' => 'disabled')); ?> 
+		<!-- prints X of Y, where X is current page and Y is number of pages -->
+		<?php echo $this->Paginator->counter(); ?>
+	</div>
 </div>

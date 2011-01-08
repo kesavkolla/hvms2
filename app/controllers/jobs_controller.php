@@ -22,7 +22,9 @@ class JobsController extends AppController {
         }
     }
     
-    function search() {        
+    function search() {
+        $sessionSearchKey = 'job_searchParams';
+
         $selectedSkills = array();
         $jobs = array();
         $joinsArray = array();
@@ -30,7 +32,16 @@ class JobsController extends AppController {
                                 'Job.published' => 1,
                                 'Job.status' => 1,
                                );
-         
+
+		if ($this->data) {
+			$this->Session->write($sessionSearchKey, $this->data);
+		}
+		else {
+			if ($this->Session->check($sessionSearchKey)) {
+				$this->data = $this->Session->read($sessionSearchKey);
+			}
+		}
+        
         if ($this->data) {
             $selectedSkills = isset($this->data['Module']) ? $this->data['Module'] : array();
             $interested = $this->data['Job']['interested'];
@@ -67,14 +78,13 @@ class JobsController extends AppController {
             $searchHeading = 'All Jobs';
         }
               
-        $jobs = $this->Job->find('all',
-                                 array (
+        $this->paginate =  array (
                                     'fields' => array (
                                       'DISTINCT Job.id', 'Job.title', 'Job.jobtype', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id'  
                                     ),
                                     'joins' => $joinsArray,
                                     'conditions' => $conditions,
-                                    'limit' => 25,
+                                    'limit' => 10,
                                     'order' => array('Job.id DESC'),
                                     'contain' => array (
                                             'Module.modulename' => array(
@@ -84,7 +94,9 @@ class JobsController extends AppController {
                                             'Interest.interest_id'
                                         )                                            
                                     )                                        
-                                 ));
+                                 );
+        
+        $jobs = $this->paginate();
         $this->set('skills', $this->Vendor->getChainedSkills());
         $this->set('selectedSkills', $selectedSkills);
         $this->set('jobs', $jobs);

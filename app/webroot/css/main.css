@@ -213,6 +213,7 @@ label {
         margin-right: 10px;
         display: inline-block;
         width: 200px;
+        float: left;
 }
 input, textarea {
 	clear: both;

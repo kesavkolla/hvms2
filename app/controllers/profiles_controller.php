@@ -1,6 +1,6 @@
 <?php
 class ProfilesController extends AppController {
-    public $uses = array ('Profile', 'Vendor');	
+    public $uses = array ('Profile', 'Vendor', 'ProfileRole');	
 	public $name = 'Profiles';
 	public $helpers = array('Inputs');
 
@@ -17,6 +17,8 @@ class ProfilesController extends AppController {
 	}
 	
     function search() {
+		$sessionSearchKey = 'prof_searchParams';
+
         $selectedSkills = array();
         $profiles = array();
         $joinsArray = array();
@@ -32,11 +34,22 @@ class ProfilesController extends AppController {
 						'type' => 'inner',
 						'foreignKey' => true,
 						'conditions'=> array('Users.id = Profile.user_id',
-											 'Users.type = "cand"',
+											 //'Users.type = "cand"',
 											)
 					);
 
+		if ($this->data) {
+			$this->Session->write($sessionSearchKey, $this->data);
+		}
+		else {
+			if ($this->Session->check($sessionSearchKey)) {
+				$this->data = $this->Session->read($sessionSearchKey);
+			}
+		}
+		
         if ($this->data) {
+			$this->Session->write($sessionSearchKey, $this->data);
+
             $selectedSkills = isset($this->data['Module']) ? $this->data['Module'] : array();
             $interested = $this->data['Profile']['interested'];
             $roles = $this->data['Profile']['role'];
@@ -78,14 +91,14 @@ class ProfilesController extends AppController {
             $searchHeading = 'All Profiles';
         }
               
-        $profiles = $this->Profile->find('all',
-                                 array (
+       $this->paginate = array (
+									'order' => array('Profile.id DESC'),
                                     'fields' => array (
                                       'DISTINCT Profile.id', 'Profile.title', 'Profile.comment', 'Profile.blurb', 'Profile.user_id'  
                                     ),
                                     'joins' => $joinsArray,
                                     'conditions' => $conditions,
-                                    'limit' => 25,
+                                    'limit' => 10,
                                     'order' => array('Profile.id DESC'),
                                     'contain' => array (
                                             'Module.modulename' => array(
@@ -96,7 +109,8 @@ class ProfilesController extends AppController {
                                         ),
 										'ProfileRole'
                                     )                                        
-                                 ));
+                                 );
+		$profiles = $this->paginate();
         $this->set('skills', $this->Vendor->getChainedSkills());
         $this->set('selectedSkills', $selectedSkills);
         $this->set('profiles', $profiles);
@@ -141,8 +155,8 @@ class ProfilesController extends AppController {
 			$this->Session->setFlash(__('Invalid profile', true));
 			$this->redirect('/');
 		}
+	
 		if (!empty($this->data)) {
-			pr ($this->data);
 			$fileUpload = $this->fileUpload();
 			$fileErrors = $fileUpload ? $fileUpload['error'] : null;
 			if (!$fileErrors) {
@@ -176,11 +190,12 @@ class ProfilesController extends AppController {
 										 ),
 										'contain' => array(
 											'Module.id' => array(),
-											'User'
+											'User',
+											'ProfileRole'
 										),
 									)
 							);
-		
+
 		$dbData = $profileDBData ? $profileDBData[0] : null;
 		if ($dbData) {
 			if ($dbData['Profile']['resume_name']) {
@@ -248,13 +263,14 @@ class ProfilesController extends AppController {
 			if (isset($profileFormData['role']))
 			{
 				$roleData = $profileFormData['role'] ? $profileFormData['role'] : array();
-				
 				$profileRoleData = array();
+				
+				$this->ProfileRole->deleteAll(array('ProfileRole.profile_id' => $profileFormData['id']));
 				foreach ($roleData as $role) {
 					if (isset($profileFormData['role-other']) && $role == 'Other') {
 						$role .= Configure::read('field.COMMA_ENCODE') . $profileFormData['role-other'];
 					}
-					$profileRoleData[] = array('role' => $role);
+    				$profileRoleData[] = array('role' => $role);
 				}
 				$data['ProfileRole'] = $profileRoleData;
 			}
@@ -268,12 +284,10 @@ class ProfilesController extends AppController {
 				$data['Profile']['company_id'] = $companyId;
 			}
 			
-			pr ($data);
 			return $data;
 	}
 
 	private function prepareProfileForDisplay ($data) {
-		pr ($data); exit;
 		$profileDataFromDB = &$data['Profile'];
 
 		// startavailability
@@ -286,12 +300,15 @@ class ProfilesController extends AppController {
 		}
 		
 		// role
-		if (isset($profileDataFromDB['role'])) {
-			$roleInfo = explode (Configure::read('field.COMMA_ENCODE'), $profileDataFromDB['role']);
-			$profileDataFromDB['role'] = trim($roleInfo[0]);
-			if (isset($roleInfo[1])) {
-				$profileDataFromDB['role-other'] = trim($roleInfo[1]);
-			}    
+		if (isset($data['ProfileRole']) && $data['ProfileRole']) {
+			$roles = Set::classicExtract($data['ProfileRole'], '{n}.role');
+			foreach ($roles as $role) {
+				$roleInfo = explode (Configure::read('field.COMMA_ENCODE'), $role);
+				$profileDataFromDB['role'][] = trim($roleInfo[0]);
+				if ($roleInfo[0] == 'Other' && isset($roleInfo[1])) {
+					$profileDataFromDB['role-other'] = trim($roleInfo[1]);
+				}
+			}
 		}
 		return $data;
 	}

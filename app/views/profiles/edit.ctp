@@ -45,11 +45,13 @@
 										'options' => $this->Inputs->getJobRoles(),
 										'fieldName' => 'role',
 										'multiple' => true,
-										'size' => 4,
+										'size' => 7,
+										'afterText' => 'You selected "Other", please elaborate',
 									   )));
 			echo ($this->element('select_with_other',
 								 array('label' => 'Start Availability',
 									   'options' => $this->Inputs->getCandidateNotice(),
+									   	'afterText' => 'You selected "Other", please elaborate',
 									   'fieldName' => 'startavailability')));		
 			echo $this->Form->input('relocate', array('label' => 'I can relocate'));
 			
