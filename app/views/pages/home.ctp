@@ -50,10 +50,17 @@
 				$link = array('controller' => 'profiles', 'action' => 'search');
         }
 ?>
-	<div id="get-user">
-		Welcome back!
-		We have new <?php echo $lookingFor ?> for you to check out. 
-		<?php echo $this->Html->link($text, $link, array('class' => 'teaser-button')); ?> 
-	</div>
+
+<?php
+	if (isset($lookingFor)) {
+?>
+		<div id="get-user">
+			Welcome back!
+			We have new <?php echo $lookingFor ?> for you to check out. 
+			<?php echo $this->Html->link($text, $link, array('class' => 'teaser-button')); ?> 
+		</div>
+<?php
+	}
+?>
 <?php } ?>
 </div>

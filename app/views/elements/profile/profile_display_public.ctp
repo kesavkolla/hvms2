@@ -1,7 +1,14 @@
-<?php $curProfile = $profile['Profile']; ?>
+<?php
+	$curProfile = $profile['Profile'];
+	
+	$statusStyle = 'active';
+	if (!$curProfile['published'] || $curProfile['status'] != 1) {
+			$statusStyle = 'closed';
+	}
+?>
 <?php $userType = $this->Session->read('Auth.User.type'); ?>
 
-<div class="profile clearfix  <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curProfile['id']?>">
+<div class="profile clearfix $statusStyle <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curProfile['id']?>">
 	<?php
 		if (isset($curProfile['title'])) {
 			echo '<div class="title">' . $curProfile['title'] . '</div>';

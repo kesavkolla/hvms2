@@ -5,15 +5,13 @@ class ProfilesController extends AppController {
 	public $helpers = array('Inputs');
 
 	function beforeFilter() {
-		// Only hospital users can search profiles.
-		$action = $this->params['action'];
-		if ($action == 'search') {
-			// the user should be a hospital user
-			if ($this->Session->read('Auth.User.type') !== 'hosp') {
-				$this->Session->setFlash('You are not authorized to view this page.');
-				$this->redirect('/');
-			}
+		
+		// the user should not be a job seeker
+		if ($this->Session->read('Auth.User.type') == 'cand') {
+			$this->Session->setFlash('You are not authorized to view this page.');
+			$this->redirect('/');
 		}
+		
 	}
 	
     function search() {
@@ -94,7 +92,7 @@ class ProfilesController extends AppController {
        $this->paginate = array (
 									'order' => array('Profile.id DESC'),
                                     'fields' => array (
-                                      'DISTINCT Profile.id', 'Profile.title', 'Profile.comment', 'Profile.blurb', 'Profile.user_id'  
+                                      'DISTINCT Profile.id', 'Profile.title', 'Profile.comment', 'Profile.blurb', 'Profile.user_id', 'Profile.published', 'Profile.status'
                                     ),
                                     'joins' => $joinsArray,
                                     'conditions' => $conditions,

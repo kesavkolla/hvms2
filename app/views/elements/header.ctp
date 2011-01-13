@@ -9,7 +9,7 @@
 
     <?php if ($session->read('Auth.User.username')) { ?>
         <?php echo '<span class="chatty">Hello, ' . $session->read('Auth.User.username') . '.</span>'; ?>
-        <?php echo '<span id="logout">(' . $html->link('Logout', array('controller' => 'users', 'action' => 'logout')) . ' if you\'re not this user)</span>'; ?>
+        <?php echo '<span id="logout">(' . $html->link('Logout', array('controller' => 'users', 'action' => 'logout', 'admin' => false)) . ' if you\'re not this user)</span>'; ?>
     <?php
     }
     else {
@@ -20,8 +20,9 @@
     
     <?php
         $tabs = array();
-        $tabs['Home'] = array ('controller' => 'pages', 'action' => 'display');
-        if ($session->read('Auth.User.username')) {
+        $tabs['Home'] = array ('controller' => 'pages', 'action' => 'display', 'admin' => false);
+        if ($session->read('Auth.User.username') &&
+            $session->read('Auth.User.type') != 'admin') {
             $tabs['My Profile'] =  array('controller' => 'profiles', 'action' => 'edit');
             
             if ($session->read('Auth.User.type') == 'cand') {
@@ -31,6 +32,8 @@
                 $tabs['Find Employees'] = array('controller' => 'profiles', 'action' => 'search');
                 $tabs['Manage My Jobs'] = array('controller' => 'jobs', 'action' => 'index');                
             }
+            
+            $tabs['My Dashboard'] = array('controller' => 'interests', 'action' => 'index');
         }
     ?>
     <div id="nav-left">

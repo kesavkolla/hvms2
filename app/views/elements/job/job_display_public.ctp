@@ -1,5 +1,12 @@
-<?php $curJob = $job['Job'] ;?>
-<div class="job clearfix <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curJob['id']?>">
+<?php
+		$curJob = $job['Job'] ;
+		
+		$statusStyle = 'active';
+		if (!$curJob['published'] || $curJob['status'] != 1) {
+				$statusStyle = 'closed';
+		}
+?>
+<div class="job clearfix $statusStyle <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curJob['id']?>">
 		<div class="title"><?php echo $curJob['title']; ?></div>
         <?php
         if (isset($curJob['location'])) { 

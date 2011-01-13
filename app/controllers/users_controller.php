@@ -232,7 +232,7 @@ class UsersController extends AppController {
                     $uname = $this->data['User']['username'];
                     $allowedDomains = explode(',', $hospital['Hospital']['domainsallowed']);
                     foreach ($allowedDomains as $domain) {
-                        $domainCheck = '@'. trim($domain); // email must end with @domainname
+                        $domainCheck = trim($domain); // email must end with @domainname
                         if (endswith($uname, $domainCheck)) {
                             return true;
                         }

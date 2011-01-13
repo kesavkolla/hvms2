@@ -1,9 +1,25 @@
 <?php
 class Interest extends AppModel {
 	var $name = 'Interest';
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
+	var $actsAs = array('Containable');
+	
+	var $belongsTo = array (
+		'Job' => array(
+			'className' => 'Job',
+			'foreignKey' => 'interest_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
 
-	var $belongsTo = array(
+		'Profile' => array(
+			'className' => 'Profile',
+			'foreignKey' => 'interest_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		
 		'User' => array(
 			'className' => 'User',
 			'foreignKey' => 'user_id',

@@ -7,19 +7,12 @@ class JobsController extends AppController {
     public $helpers = array('Inputs', 'Number', 'Time');
         
     function beforeFilter() {
-        // all actions except searching are restricted.
-        $action = $this->params['action'];
-        if ($action != 'search') {
-            // the user should be a hospital user
-            if ($this->Session->read('Auth.User.type') !== 'hosp') {
-                $this->Session->setFlash('You are not authorized to view this page.');
-                $this->redirect('/');
-            }
-            
-            if ($action == 'edit') {
-                
-            }
-        }
+        // the user should not be a job poster
+        if ($this->Session->read('Auth.User.type') == 'hosp') {
+            $this->Session->setFlash('You are not authorized to view this page.');
+            $this->redirect('/');
+        }      
+        
     }
     
     function search() {
@@ -80,7 +73,7 @@ class JobsController extends AppController {
               
         $this->paginate =  array (
                                     'fields' => array (
-                                      'DISTINCT Job.id', 'Job.title', 'Job.jobtype', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id'  
+                                      'DISTINCT Job.id', 'Job.title', 'Job.jobtype', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id', 'Job.published', 'Job.status'
                                     ),
                                     'joins' => $joinsArray,
                                     'conditions' => $conditions,
