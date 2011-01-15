@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 11, 2010 at 05:33 PM
+-- Generation Time: Jan 14, 2011 at 04:45 PM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
@@ -32,8 +32,39 @@ CREATE TABLE IF NOT EXISTS `hospitals` (
   `description` varchar(300) NOT NULL,
   `domainsallowed` varchar(500) NOT NULL,
   `url` varchar(300) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+  `code` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `code` (`code`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `hospitals`
+--
+
+INSERT INTO `hospitals` (`id`, `name`, `address1`, `address2`, `city`, `state`, `zip`, `phone`, `fax`, `description`, `domainsallowed`, `url`, `code`) VALUES
+(1, 'Sutter Health', '', '', '', '', '', '', '', '', '@sutterhealth.org', '', 'SUTT'),
+(2, 'Washington Hospital Health System (WHHS)', '', '', '', '', '', '', '', '', '@whhs.com', '', 'WHHS'),
+(3, 'Fairview Health Services (FHS)', '', '', '', '', '', '', '', '', '@fairview.org', '', 'FVHS'),
+(4, 'NYU Langone', '', '', '', '', '', '', '', '', '@nyumc.org', '', 'NYUL'),
+(5, 'Cedar-Sinai Health System', '', '', '', '', '', '', '', '', '@cshs.org', '', 'CSHS');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `interests`
+--
+
+CREATE TABLE IF NOT EXISTS `interests` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `interest_id` int(11) NOT NULL,
+  `interest_type` enum('job','cand') NOT NULL,
+  `Comment` varchar(400) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`,`interest_id`,`interest_type`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='user_id is the interested user. interest_id is either a job ' AUTO_INCREMENT=2 ;
+
 
 -- --------------------------------------------------------
 
@@ -58,10 +89,12 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `expensespaid` tinyint(1) NOT NULL DEFAULT '1',
   `role` varchar(300) DEFAULT NULL,
   `openings` int(11) NOT NULL DEFAULT '1',
-  `status` int(11) DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
   `published` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+  PRIMARY KEY (`id`),
+  KEY `role` (`role`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+
 
 -- --------------------------------------------------------
 
@@ -72,12 +105,13 @@ CREATE TABLE IF NOT EXISTS `jobs` (
 CREATE TABLE IF NOT EXISTS `jobs_skills` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job_id` int(11) NOT NULL,
-  `version_id` int(11) NOT NULL,
+  `module_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `job_version` (`job_id`,`version_id`),
+  UNIQUE KEY `job_module` (`job_id`,`module_id`),
   KEY `job_id` (`job_id`),
-  KEY `version_id` (`version_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
+  KEY `module_id` (`module_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+
 
 -- --------------------------------------------------------
 
@@ -90,8 +124,112 @@ CREATE TABLE IF NOT EXISTS `modules` (
   `vendor_id` int(11) NOT NULL,
   `modulename` varchar(300) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `vendor_id` (`vendor_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+  UNIQUE KEY `vendor_id_2` (`vendor_id`,`modulename`),
+  KEY `vendor_id` (`vendor_id`),
+  KEY `modulename` (`modulename`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=97 ;
+
+--
+-- Dumping data for table `modules`
+--
+
+INSERT INTO `modules` (`id`, `vendor_id`, `modulename`) VALUES
+(1, 1, 'ADT/Prelude'),
+(2, 1, 'Ambulatory'),
+(3, 1, 'Anesthesia'),
+(4, 1, 'ASAP Emergency Department'),
+(5, 1, 'Beacon Oncology'),
+(6, 1, 'Beaker Anatomic Pathology'),
+(7, 1, 'Beaker Clinical Lab'),
+(8, 1, 'Bedtime'),
+(9, 1, 'Benefits Engine'),
+(10, 1, 'Bridges (Interfaces)'),
+(11, 1, 'Cache System Manager'),
+(12, 1, 'Cadence'),
+(13, 1, 'Cardiant'),
+(14, 1, 'Care Everywhere'),
+(15, 1, 'Chronicles Ad Hoc Reporting'),
+(16, 1, 'Chronicles Install Utilities'),
+(17, 1, 'Chronicles Non Programmer'),
+(18, 1, 'Chronicles Programmer'),
+(19, 1, 'Clarity'),
+(20, 1, 'Clarity ADT'),
+(21, 1, 'Clarity Ambulatory'),
+(22, 1, 'Clarity ASAP'),
+(23, 1, 'Clarity Cadence'),
+(24, 1, 'Clarity ETL Administration'),
+(25, 1, 'Clarity HIM'),
+(26, 1, 'Clarity Inpatient'),
+(27, 1, 'Clarity Optime'),
+(28, 1, 'Clarity Resolute HB'),
+(29, 1, 'Clarity Resolute PB'),
+(30, 1, 'Clarity Tapestry'),
+(31, 1, 'Clarity Willow'),
+(32, 1, 'Client Systems Manager'),
+(33, 1, 'Data Courier'),
+(34, 1, 'EpicWeb'),
+(35, 1, 'HIM'),
+(39, 1, 'HIM Chart Tracking'),
+(36, 1, 'HIM Coding and Abstracting'),
+(37, 1, 'HIM Deficiency Tracking'),
+(38, 1, 'HIM Release of Information'),
+(40, 1, 'HOD'),
+(41, 1, 'Home Care'),
+(42, 1, 'Home Health Billing'),
+(43, 1, 'Hospice Billing'),
+(44, 1, 'ICU'),
+(45, 1, 'Identity'),
+(46, 1, 'Inpatient Clinical Documentation'),
+(47, 1, 'Inpatient Decision Support'),
+(48, 1, 'Inpatient Medication Orders'),
+(49, 1, 'Inpatient Order Transmittal'),
+(50, 1, 'Inpatient Procedure Orders'),
+(51, 1, 'Interoperability'),
+(52, 1, 'IntraConnect'),
+(53, 1, 'Link'),
+(54, 1, 'Lucy'),
+(55, 1, 'MyChart'),
+(56, 1, 'Nurse Triage'),
+(57, 1, 'OpTime'),
+(58, 1, 'Outreach'),
+(59, 1, 'Pheonix'),
+(60, 1, 'PlanLink'),
+(61, 1, 'Radiant'),
+(62, 1, 'Reference Lab Billing'),
+(63, 1, 'Reporting Workbench Report Writing and Administration'),
+(64, 1, 'Resolute HB - Billing Claims'),
+(65, 1, 'Resolute HB - Charge Capture and CDM Management'),
+(66, 1, 'Resolute HB - Payment Application Readiness'),
+(67, 1, 'Resolute HB - Revenue Cycle Readiness: Insurance Follow-up'),
+(68, 1, 'Resolute HB - Revenue Cycle Readiness: Pre-Billing'),
+(69, 1, 'Resolute HB - Revenue Cycle Readiness: Revenue Cycle'),
+(70, 1, 'Resolute HB - Revenue Cycle Readiness: Single Billing Office Self-pay Follow-up'),
+(71, 1, 'Resolute HB Administrator'),
+(72, 1, 'Resolute PB - Administrator: Claims'),
+(73, 1, 'Resolute PB - Revenue Cycle Readiness: Charge Capture'),
+(74, 1, 'Resolute PB - Revenue Cycle Readiness: Insurance Follow-up'),
+(75, 1, 'Resolute PB - Revenue Cycle Readiness: Payment Application'),
+(76, 1, 'Resolute PB - Revenue Cycle Readiness: Revenue Cycle'),
+(77, 1, 'Resolute PB - Revenue Cycle Readiness: Self-pay Follow-up'),
+(78, 1, 'Resolute PB Administrator'),
+(79, 1, 'Resolute PB SBO - Administrator: Claims'),
+(80, 1, 'Resolute PB SBO - Administrator: Resolute Professional Billing'),
+(81, 1, 'Resolute PB SBO - Revenue Cycle Readiness: Charge Capture'),
+(82, 1, 'Resolute PB SBO - Revenue Cycle Readiness: Claims'),
+(83, 1, 'Resolute PB SBO - Revenue Cycle Readiness: Insurance Follow-up'),
+(84, 1, 'Resolute PB SBO - Revenue Cycle Readiness: Payment Application'),
+(85, 1, 'Resolute PB SBO - Revenue Cycle Readiness: Revenue Cycle'),
+(86, 1, 'Resolute PB SBO - Revenue Cycle Readiness: Single Billing Office Self-pay Follow-up'),
+(87, 1, 'Security'),
+(88, 1, 'SQL Structures and Reporting'),
+(89, 1, 'Stork'),
+(90, 1, 'Tapestry'),
+(91, 1, 'Willow Pharmacy'),
+(94, 2, 'MD'),
+(96, 2, 'PharmD'),
+(92, 2, 'PMP'),
+(93, 2, 'RN'),
+(95, 2, 'RPHR');
 
 -- --------------------------------------------------------
 
@@ -114,19 +252,21 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `fax` varchar(30) DEFAULT NULL,
   `title` varchar(100) DEFAULT NULL,
   `currentcompany` varchar(200) DEFAULT NULL,
-  `role` varchar(100) DEFAULT NULL,
+  `tagline` varchar(300) DEFAULT NULL,
   `startavailability` varchar(100) DEFAULT NULL,
   `relocate` tinyint(1) DEFAULT NULL,
   `comment` varchar(300) DEFAULT NULL,
   `blurb` varchar(300) DEFAULT NULL,
-  `hospital_id` int(11) DEFAULT NULL,
+  `company_id` int(11) NOT NULL DEFAULT '-1' COMMENT 'For now, this is hospital id, later we may collect company ids for job posters as well',
   `resume_name` varchar(300) DEFAULT NULL,
   `resume` longblob,
   `published` tinyint(4) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL DEFAULT '0',
+  `trusted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
+
 
 -- --------------------------------------------------------
 
@@ -137,12 +277,31 @@ CREATE TABLE IF NOT EXISTS `profiles` (
 CREATE TABLE IF NOT EXISTS `profiles_skills` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `profile_id` int(11) NOT NULL,
+  `module_id` int(11) NOT NULL,
   `version_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `version_id` (`version_id`),
-  KEY `profile_version` (`profile_id`,`version_id`),
+  KEY `profile_id` (`profile_id`),
+  KEY `profile_module` (`profile_id`,`module_id`),
+  KEY `module_id` (`module_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=104 ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `profile_roles`
+--
+
+CREATE TABLE IF NOT EXISTS `profile_roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `profile_id` int(11) NOT NULL,
+  `role` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `profile_role` (`profile_id`,`role`),
+  KEY `role` (`role`),
   KEY `profile_id` (`profile_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=80 ;
+
 
 -- --------------------------------------------------------
 
@@ -161,7 +320,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='User table' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='User table' AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `password`, `type`, `status`, `hospital_id`, `created`, `modified`) VALUES
+(4, 'admin@hvms.com', '37500f7902f42550728324e5bcc9544091ae49d2', 'admin', 1, NULL, '2011-01-13 10:37:31', '2011-01-13 10:37:31');
 
 -- --------------------------------------------------------
 
@@ -172,8 +338,17 @@ CREATE TABLE IF NOT EXISTS `users` (
 CREATE TABLE IF NOT EXISTS `vendors` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `vendorname` varchar(300) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `vendorname` (`vendorname`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `vendors`
+--
+
+INSERT INTO `vendors` (`id`, `vendorname`) VALUES
+(1, 'Epic'),
+(2, 'Liscensure');
 
 -- --------------------------------------------------------
 
@@ -186,6 +361,381 @@ CREATE TABLE IF NOT EXISTS `versions` (
   `module_id` int(11) NOT NULL,
   `versionname` varchar(300) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `module_id` (`module_id`),
-  KEY `module_id_2` (`module_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+  UNIQUE KEY `module_id_2` (`module_id`,`versionname`),
+  KEY `module_id` (`module_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=370 ;
+
+--
+-- Dumping data for table `versions`
+--
+
+INSERT INTO `versions` (`id`, `module_id`, `versionname`) VALUES
+(4, 1, 'Other'),
+(3, 1, 'Spring 07'),
+(2, 1, 'Spring 08'),
+(1, 1, 'Summer 09'),
+(8, 2, 'Other'),
+(7, 2, 'Spring 07'),
+(6, 2, 'Spring 08'),
+(5, 2, 'Summer 09'),
+(12, 3, 'Other'),
+(11, 3, 'Spring 07'),
+(10, 3, 'Spring 08'),
+(9, 3, 'Summer 09'),
+(16, 4, 'Other'),
+(15, 4, 'Spring 07'),
+(14, 4, 'Spring 08'),
+(13, 4, 'Summer 09'),
+(20, 5, 'Other'),
+(19, 5, 'Spring 07'),
+(18, 5, 'Spring 08'),
+(17, 5, 'Summer 09'),
+(24, 6, 'Other'),
+(23, 6, 'Spring 07'),
+(22, 6, 'Spring 08'),
+(21, 6, 'Summer 09'),
+(28, 7, 'Other'),
+(27, 7, 'Spring 07'),
+(26, 7, 'Spring 08'),
+(25, 7, 'Summer 09'),
+(32, 8, 'Other'),
+(31, 8, 'Spring 07'),
+(30, 8, 'Spring 08'),
+(29, 8, 'Summer 09'),
+(36, 9, 'Other'),
+(35, 9, 'Spring 07'),
+(34, 9, 'Spring 08'),
+(33, 9, 'Summer 09'),
+(40, 10, 'Other'),
+(39, 10, 'Spring 07'),
+(38, 10, 'Spring 08'),
+(37, 10, 'Summer 09'),
+(44, 11, 'Other'),
+(43, 11, 'Spring 07'),
+(42, 11, 'Spring 08'),
+(41, 11, 'Summer 09'),
+(48, 12, 'Other'),
+(47, 12, 'Spring 07'),
+(46, 12, 'Spring 08'),
+(45, 12, 'Summer 09'),
+(52, 13, 'Other'),
+(51, 13, 'Spring 07'),
+(50, 13, 'Spring 08'),
+(49, 13, 'Summer 09'),
+(56, 14, 'Other'),
+(55, 14, 'Spring 07'),
+(54, 14, 'Spring 08'),
+(53, 14, 'Summer 09'),
+(60, 15, 'Other'),
+(59, 15, 'Spring 07'),
+(58, 15, 'Spring 08'),
+(57, 15, 'Summer 09'),
+(64, 16, 'Other'),
+(63, 16, 'Spring 07'),
+(62, 16, 'Spring 08'),
+(61, 16, 'Summer 09'),
+(68, 17, 'Other'),
+(67, 17, 'Spring 07'),
+(66, 17, 'Spring 08'),
+(65, 17, 'Summer 09'),
+(72, 18, 'Other'),
+(71, 18, 'Spring 07'),
+(70, 18, 'Spring 08'),
+(69, 18, 'Summer 09'),
+(76, 19, 'Other'),
+(75, 19, 'Spring 07'),
+(74, 19, 'Spring 08'),
+(73, 19, 'Summer 09'),
+(80, 20, 'Other'),
+(79, 20, 'Spring 07'),
+(78, 20, 'Spring 08'),
+(77, 20, 'Summer 09'),
+(84, 21, 'Other'),
+(83, 21, 'Spring 07'),
+(82, 21, 'Spring 08'),
+(81, 21, 'Summer 09'),
+(88, 22, 'Other'),
+(87, 22, 'Spring 07'),
+(86, 22, 'Spring 08'),
+(85, 22, 'Summer 09'),
+(92, 23, 'Other'),
+(91, 23, 'Spring 07'),
+(90, 23, 'Spring 08'),
+(89, 23, 'Summer 09'),
+(96, 24, 'Other'),
+(95, 24, 'Spring 07'),
+(94, 24, 'Spring 08'),
+(93, 24, 'Summer 09'),
+(100, 25, 'Other'),
+(99, 25, 'Spring 07'),
+(98, 25, 'Spring 08'),
+(97, 25, 'Summer 09'),
+(104, 26, 'Other'),
+(103, 26, 'Spring 07'),
+(102, 26, 'Spring 08'),
+(101, 26, 'Summer 09'),
+(108, 27, 'Other'),
+(107, 27, 'Spring 07'),
+(106, 27, 'Spring 08'),
+(105, 27, 'Summer 09'),
+(112, 28, 'Other'),
+(111, 28, 'Spring 07'),
+(110, 28, 'Spring 08'),
+(109, 28, 'Summer 09'),
+(116, 29, 'Other'),
+(115, 29, 'Spring 07'),
+(114, 29, 'Spring 08'),
+(113, 29, 'Summer 09'),
+(120, 30, 'Other'),
+(119, 30, 'Spring 07'),
+(118, 30, 'Spring 08'),
+(117, 30, 'Summer 09'),
+(124, 31, 'Other'),
+(123, 31, 'Spring 07'),
+(122, 31, 'Spring 08'),
+(121, 31, 'Summer 09'),
+(128, 32, 'Other'),
+(127, 32, 'Spring 07'),
+(126, 32, 'Spring 08'),
+(125, 32, 'Summer 09'),
+(132, 33, 'Other'),
+(131, 33, 'Spring 07'),
+(130, 33, 'Spring 08'),
+(129, 33, 'Summer 09'),
+(136, 34, 'Other'),
+(135, 34, 'Spring 07'),
+(134, 34, 'Spring 08'),
+(133, 34, 'Summer 09'),
+(140, 35, 'Other'),
+(139, 35, 'Spring 07'),
+(138, 35, 'Spring 08'),
+(137, 35, 'Summer 09'),
+(144, 36, 'Other'),
+(143, 36, 'Spring 07'),
+(142, 36, 'Spring 08'),
+(141, 36, 'Summer 09'),
+(148, 37, 'Other'),
+(147, 37, 'Spring 07'),
+(146, 37, 'Spring 08'),
+(145, 37, 'Summer 09'),
+(152, 38, 'Other'),
+(151, 38, 'Spring 07'),
+(150, 38, 'Spring 08'),
+(149, 38, 'Summer 09'),
+(156, 39, 'Other'),
+(155, 39, 'Spring 07'),
+(154, 39, 'Spring 08'),
+(153, 39, 'Summer 09'),
+(160, 40, 'Other'),
+(159, 40, 'Spring 07'),
+(158, 40, 'Spring 08'),
+(157, 40, 'Summer 09'),
+(164, 41, 'Other'),
+(163, 41, 'Spring 07'),
+(162, 41, 'Spring 08'),
+(161, 41, 'Summer 09'),
+(168, 42, 'Other'),
+(167, 42, 'Spring 07'),
+(166, 42, 'Spring 08'),
+(165, 42, 'Summer 09'),
+(172, 43, 'Other'),
+(171, 43, 'Spring 07'),
+(170, 43, 'Spring 08'),
+(169, 43, 'Summer 09'),
+(176, 44, 'Other'),
+(175, 44, 'Spring 07'),
+(174, 44, 'Spring 08'),
+(173, 44, 'Summer 09'),
+(180, 45, 'Other'),
+(179, 45, 'Spring 07'),
+(178, 45, 'Spring 08'),
+(177, 45, 'Summer 09'),
+(184, 46, 'Other'),
+(183, 46, 'Spring 07'),
+(182, 46, 'Spring 08'),
+(181, 46, 'Summer 09'),
+(188, 47, 'Other'),
+(187, 47, 'Spring 07'),
+(186, 47, 'Spring 08'),
+(185, 47, 'Summer 09'),
+(192, 48, 'Other'),
+(191, 48, 'Spring 07'),
+(190, 48, 'Spring 08'),
+(189, 48, 'Summer 09'),
+(196, 49, 'Other'),
+(195, 49, 'Spring 07'),
+(194, 49, 'Spring 08'),
+(193, 49, 'Summer 09'),
+(200, 50, 'Other'),
+(199, 50, 'Spring 07'),
+(198, 50, 'Spring 08'),
+(197, 50, 'Summer 09'),
+(204, 51, 'Other'),
+(203, 51, 'Spring 07'),
+(202, 51, 'Spring 08'),
+(201, 51, 'Summer 09'),
+(208, 52, 'Other'),
+(207, 52, 'Spring 07'),
+(206, 52, 'Spring 08'),
+(205, 52, 'Summer 09'),
+(212, 53, 'Other'),
+(211, 53, 'Spring 07'),
+(210, 53, 'Spring 08'),
+(209, 53, 'Summer 09'),
+(216, 54, 'Other'),
+(215, 54, 'Spring 07'),
+(214, 54, 'Spring 08'),
+(213, 54, 'Summer 09'),
+(220, 55, 'Other'),
+(219, 55, 'Spring 07'),
+(218, 55, 'Spring 08'),
+(217, 55, 'Summer 09'),
+(224, 56, 'Other'),
+(223, 56, 'Spring 07'),
+(222, 56, 'Spring 08'),
+(221, 56, 'Summer 09'),
+(228, 57, 'Other'),
+(227, 57, 'Spring 07'),
+(226, 57, 'Spring 08'),
+(225, 57, 'Summer 09'),
+(232, 58, 'Other'),
+(231, 58, 'Spring 07'),
+(230, 58, 'Spring 08'),
+(229, 58, 'Summer 09'),
+(236, 59, 'Other'),
+(235, 59, 'Spring 07'),
+(234, 59, 'Spring 08'),
+(233, 59, 'Summer 09'),
+(240, 60, 'Other'),
+(239, 60, 'Spring 07'),
+(238, 60, 'Spring 08'),
+(237, 60, 'Summer 09'),
+(244, 61, 'Other'),
+(243, 61, 'Spring 07'),
+(242, 61, 'Spring 08'),
+(241, 61, 'Summer 09'),
+(248, 62, 'Other'),
+(247, 62, 'Spring 07'),
+(246, 62, 'Spring 08'),
+(245, 62, 'Summer 09'),
+(252, 63, 'Other'),
+(251, 63, 'Spring 07'),
+(250, 63, 'Spring 08'),
+(249, 63, 'Summer 09'),
+(256, 64, 'Other'),
+(255, 64, 'Spring 07'),
+(254, 64, 'Spring 08'),
+(253, 64, 'Summer 09'),
+(260, 65, 'Other'),
+(259, 65, 'Spring 07'),
+(258, 65, 'Spring 08'),
+(257, 65, 'Summer 09'),
+(264, 66, 'Other'),
+(263, 66, 'Spring 07'),
+(262, 66, 'Spring 08'),
+(261, 66, 'Summer 09'),
+(268, 67, 'Other'),
+(267, 67, 'Spring 07'),
+(266, 67, 'Spring 08'),
+(265, 67, 'Summer 09'),
+(272, 68, 'Other'),
+(271, 68, 'Spring 07'),
+(270, 68, 'Spring 08'),
+(269, 68, 'Summer 09'),
+(276, 69, 'Other'),
+(275, 69, 'Spring 07'),
+(274, 69, 'Spring 08'),
+(273, 69, 'Summer 09'),
+(280, 70, 'Other'),
+(279, 70, 'Spring 07'),
+(278, 70, 'Spring 08'),
+(277, 70, 'Summer 09'),
+(284, 71, 'Other'),
+(283, 71, 'Spring 07'),
+(282, 71, 'Spring 08'),
+(281, 71, 'Summer 09'),
+(288, 72, 'Other'),
+(287, 72, 'Spring 07'),
+(286, 72, 'Spring 08'),
+(285, 72, 'Summer 09'),
+(292, 73, 'Other'),
+(291, 73, 'Spring 07'),
+(290, 73, 'Spring 08'),
+(289, 73, 'Summer 09'),
+(296, 74, 'Other'),
+(295, 74, 'Spring 07'),
+(294, 74, 'Spring 08'),
+(293, 74, 'Summer 09'),
+(300, 75, 'Other'),
+(299, 75, 'Spring 07'),
+(298, 75, 'Spring 08'),
+(297, 75, 'Summer 09'),
+(304, 76, 'Other'),
+(303, 76, 'Spring 07'),
+(302, 76, 'Spring 08'),
+(301, 76, 'Summer 09'),
+(308, 77, 'Other'),
+(307, 77, 'Spring 07'),
+(306, 77, 'Spring 08'),
+(305, 77, 'Summer 09'),
+(312, 78, 'Other'),
+(311, 78, 'Spring 07'),
+(310, 78, 'Spring 08'),
+(309, 78, 'Summer 09'),
+(316, 79, 'Other'),
+(315, 79, 'Spring 07'),
+(314, 79, 'Spring 08'),
+(313, 79, 'Summer 09'),
+(320, 80, 'Other'),
+(319, 80, 'Spring 07'),
+(318, 80, 'Spring 08'),
+(317, 80, 'Summer 09'),
+(324, 81, 'Other'),
+(323, 81, 'Spring 07'),
+(322, 81, 'Spring 08'),
+(321, 81, 'Summer 09'),
+(328, 82, 'Other'),
+(327, 82, 'Spring 07'),
+(326, 82, 'Spring 08'),
+(325, 82, 'Summer 09'),
+(332, 83, 'Other'),
+(331, 83, 'Spring 07'),
+(330, 83, 'Spring 08'),
+(329, 83, 'Summer 09'),
+(336, 84, 'Other'),
+(335, 84, 'Spring 07'),
+(334, 84, 'Spring 08'),
+(333, 84, 'Summer 09'),
+(340, 85, 'Other'),
+(339, 85, 'Spring 07'),
+(338, 85, 'Spring 08'),
+(337, 85, 'Summer 09'),
+(344, 86, 'Other'),
+(343, 86, 'Spring 07'),
+(342, 86, 'Spring 08'),
+(341, 86, 'Summer 09'),
+(348, 87, 'Other'),
+(347, 87, 'Spring 07'),
+(346, 87, 'Spring 08'),
+(345, 87, 'Summer 09'),
+(352, 88, 'Other'),
+(351, 88, 'Spring 07'),
+(350, 88, 'Spring 08'),
+(349, 88, 'Summer 09'),
+(356, 89, 'Other'),
+(355, 89, 'Spring 07'),
+(354, 89, 'Spring 08'),
+(353, 89, 'Summer 09'),
+(360, 90, 'Other'),
+(359, 90, 'Spring 07'),
+(358, 90, 'Spring 08'),
+(357, 90, 'Summer 09'),
+(364, 91, 'Other'),
+(363, 91, 'Spring 07'),
+(362, 91, 'Spring 08'),
+(361, 91, 'Summer 09'),
+(365, 92, 'All'),
+(366, 93, 'All'),
+(367, 94, 'All'),
+(368, 95, 'All'),
+(369, 96, 'All');
