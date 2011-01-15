@@ -1,4 +1,5 @@
 <?php echo $html->script('profile', array('inline' => false)); ?>
+<?php $userType = $session->read('Auth.User.type'); ?>
 <?php if ($userType == 'cand') { ?>
     <div class="sub-header clearfix">
         <h2><?php __('My Profile');?></h2>
@@ -37,7 +38,7 @@
 
 			echo $this->Form->input('title');
 			echo $this->Form->input('tagline', array('after' => '<span class="hint">Briefly state your strengths</span>'));
-			
+
 			echo $this->Form->input('currentcompany', array('label' => 'Currently Working at', 'id' => 'current-company'));
 
 			echo ($this->element('select_with_other',

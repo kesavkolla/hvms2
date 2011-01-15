@@ -62,6 +62,16 @@ dd {
     float: left;
 }
 
+td, th {
+    border-right: 1px solid #333;
+    padding: 10px;
+    border-bottom: 1px solid #333;
+}
+
+th {
+    font-weight: bold;
+}
+
 select.multi-select {
     height: auto;
 }

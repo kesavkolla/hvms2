@@ -210,9 +210,6 @@ class ProfilesController extends AppController {
 
 		$this->set('selectedSkills', isset($selectedSkills) ? $selectedSkills : array());
 		$this->set('skills', ClassRegistry::init('Vendor')->getChainedSkills());
-		$this->set('userType', $this->Session->read('Auth.User.type'));
-
-
 	}
 	
 	private function fileUpload() {
@@ -271,6 +268,7 @@ class ProfilesController extends AppController {
     				$profileRoleData[] = array('role' => $role);
 				}
 				$data['ProfileRole'] = $profileRoleData;
+				unset($profileFormData['role']);
 			}
 			
 			// check if currencompany matches a hospital in our list
@@ -278,7 +276,7 @@ class ProfilesController extends AppController {
 				$hospital = ClassRegistry::init('Hospital')->
 							findByName(trim($profileFormData['currentcompany']));
 
-				$companyId = $hospital ? $hospital['Hospital']['id'] : null;
+				$companyId = $hospital ? $hospital['Hospital']['id'] : -1;
 				$data['Profile']['company_id'] = $companyId;
 			}
 			
@@ -312,66 +310,71 @@ class ProfilesController extends AppController {
 	}
 	
 
-/*
+
 	function admin_index() {
-		$this->Profile->recursive = 0;
+		$this->paginate = array (
+			'order' => array('Profile.id DESC'),
+
+			'contain' => array(
+				'User',
+				'ProfileRole'
+			)
+		);
 		$this->set('profiles', $this->paginate());
 	}
 
-	function admin_view($id = null) {
-		if (!$id) {
+	function admin_edit($uid = null) {
+		if (!$uid) {
 			$this->Session->setFlash(__('Invalid profile', true));
-			$this->redirect(array('action' => 'index'));
+			$this->redirect('/');
 		}
-		$this->set('profile', $this->Profile->read(null, $id));
-	}
-
-	function admin_add() {
+		
 		if (!empty($this->data)) {
-			$this->Profile->create();
-			if ($this->Profile->save($this->data)) {
-				$this->Session->setFlash(__('The profile has been saved', true));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The profile could not be saved. Please, try again.', true));
+			$this->data['Profile']['user_id'] = $uid;
+			$fileUpload = $this->fileUpload();
+			$fileErrors = $fileUpload ? $fileUpload['error'] : null;
+			if (!$fileErrors) {
+				$profileData = $this->prepareProfileForDB($this->data);
+				if ($this->Profile->saveAll($profileData)) {
+					$this->Session->setFlash(__('This profile has been saved', true));
+				}
+				else {
+					$this->Session->setFlash(__('The profile could not be saved. Please, try again.', true));
+				}
+			}
+			else if (isset($fileErrors)) {
+				$this->Profile->invalidate('resume_upload', $fileErrors);
 			}
 		}
-		$users = $this->Profile->User->find('list');
-		$this->set(compact('users'));
-	}
+		$profileDBData = $this->Profile->find('all',
+								array('conditions' => array(
+										 'Profile.user_id' => $uid
+										 ),
+										'contain' => array(
+											'Module.id' => array(),
+											'User',
+											'ProfileRole'
+										),
+									)
+							);
 
-	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
-			$this->Session->setFlash(__('Invalid profile', true));
-			$this->redirect(array('action' => 'index'));
-		}
-		if (!empty($this->data)) {
-			if ($this->Profile->save($this->data)) {
-				$this->Session->setFlash(__('The profile has been saved', true));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The profile could not be saved. Please, try again.', true));
+		$dbData = $profileDBData ? $profileDBData[0] : null;
+		if ($dbData) {
+			if ($dbData['Profile']['resume_name']) {
+				$fileName = $dbData['Profile']['resume_name'];
+				$tmpName = FILES_DIR . $dbData['Profile']['resume_name'];
+				$content = $dbData['Profile']['resume'];
+				$fp  = fopen($tmpName, 'w');
+				fwrite($fp, stripslashes($content));
+				fclose($fp);
 			}
+			$this->data = $this->prepareProfileForDisplay($dbData);
+			$selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			
 		}
-		if (empty($this->data)) {
-			$this->data = $this->Profile->read(null, $id);
-		}
-		$users = $this->Profile->User->find('list');
-		$this->set(compact('users'));
+
+		$this->set('selectedSkills', isset($selectedSkills) ? $selectedSkills : array());
+		$this->set('skills', ClassRegistry::init('Vendor')->getChainedSkills());
 	}
 
-	function admin_delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for profile', true));
-			$this->redirect(array('action'=>'index'));
-		}
-		if ($this->Profile->delete($id)) {
-			$this->Session->setFlash(__('Profile deleted', true));
-			$this->redirect(array('action'=>'index'));
-		}
-		$this->Session->setFlash(__('Profile was not deleted', true));
-		$this->redirect(array('action' => 'index'));
-	}
-*/
 }
 ?>

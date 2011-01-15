@@ -116,6 +116,18 @@ class InputsHelper extends AppHelper {
             1 => 'Yes');
     }
     
+    public function getAdminStatuses () {
+        return array (
+            0 => 'Inactive',
+            1 => 'Active');
+    }
+    
+    public function getTrustedStatuses () {
+        return array (
+            0 => 'No',
+            1 => 'Yes');
+    }
+    
     /* dbRolesArray is of the form:
       array (
             [0] => Array

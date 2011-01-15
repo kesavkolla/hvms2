@@ -231,68 +231,51 @@ class JobsController extends AppController {
         return $data;
     }
     
-    /*
+    
 	function admin_index() {
 		$this->Job->recursive = 0;
 		$this->set('jobs', $this->paginate());
 	}
 
-	function admin_view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid job', true));
-			$this->redirect(array('action' => 'index'));
-		}
-		$this->set('job', $this->Job->read(null, $id));
-	}
-
-	function admin_add() {
-		if (!empty($this->data)) {
-			$this->Job->create();
-			if ($this->Job->save($this->data)) {
-				$this->Session->setFlash(__('The job has been saved', true));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
-			}
-		}
-		$users = $this->Job->User->find('list');
-		$this->set(compact('users'));
-	}
-
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
-			$this->Session->setFlash(__('Invalid job', true));
-			$this->redirect(array('action' => 'index'));
-		}
-		if (!empty($this->data)) {
-			if ($this->Job->save($this->data)) {
-				$this->Session->setFlash(__('The job has been saved', true));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
-			}
-		}
-		if (empty($this->data)) {
-			$this->data = $this->Job->read(null, $id);
-		}
-		$users = $this->Job->User->find('list');
-		$this->set(compact('users'));
+           $selectedSkills = array();
+            if (!$id && empty($this->data)) {
+                    $this->Session->setFlash(__('Invalid job', true));
+                    $this->redirect(array('action' => 'index'));
+            }
+            if (!empty($this->data)) {
+                    $jobData = $this->prepareJobForDB($this->data);
+                    $jobData['Job']['id'] = $id;                
+            
+                    if ($this->Job->save($jobData)) {
+                            $this->Session->setFlash(__('The job has been saved', true));
+                            $this->redirect(array('action' => 'index'));
+                    } else {
+                            $this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
+                    }
+                    $selectedSkills = $this->data['Module'];
+            }
+            if (empty($this->data)) {
+                    $dbData = $this->Job->read(null, $id);
+                    $this->data = $this->prepareJobForDisplay($dbData);                        
+                    $selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			
+            }
+            $this->set('selectedSkills', $selectedSkills);
+            $this->set('skills', $this->Vendor->getChainedSkills()); 
 	}
-
-	function admin_delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for job', true));
-			$this->redirect(array('action'=>'index'));
-		}
-		if ($this->Job->delete($id)) {
-			$this->Session->setFlash(__('Job deleted', true));
-			$this->redirect(array('action'=>'index'));
-		}
-		$this->Session->setFlash(__('Job was not deleted', true));
-		$this->redirect(array('action' => 'index'));
-	}
-        */
-
-
+    
+    function admin_viewuser ($uid = null) {
+        $this->Job->recursive = 0;
+        if (!$uid) {
+            $this->Session->setFlash(__('Invalid user', true));
+            $this->redirect(array('action' => 'index'));
+        }
+        
+        $this->paginate = array (
+            'conditions' => array('user_id' => $uid)
+        );
+		$this->set('jobs', $this->paginate());
+        $this->render('admin_index');
+    }
 }
 ?>

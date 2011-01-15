@@ -260,6 +260,15 @@ class UsersController extends AppController {
         return;
     }
     
+	function admin_view($id = null) {
+		if (!$id) {
+			$this->Session->setFlash(__('Invalid user', true));
+			$this->redirect(array('action' => 'index'));
+		}
+		$this->set('user', $this->User->read(null, $id));
+	}
+        
+
 }
 
 ?>
