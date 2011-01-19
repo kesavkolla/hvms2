@@ -11,8 +11,9 @@ class JobsController extends AppController {
         if ($this->Session->read('Auth.User.type') == 'hosp') {
             $this->Session->setFlash('You are not authorized to view this page.');
             $this->redirect('/');
+            
         }      
-        
+        parent::beforeFilter();
     }
     
     function search() {
@@ -84,7 +85,7 @@ class JobsController extends AppController {
                                                 'Vendor.vendorname'
                                         ),
                                         'User' => array (
-                                            'Interest.interest_id'
+                                            'Interest.interest_id',
                                         )                                            
                                     )                                        
                                  );
@@ -137,6 +138,7 @@ class JobsController extends AppController {
             if (!$id && empty($this->data)) {
                     $this->Session->setFlash(__('Invalid job', true));
                     $this->redirect(array('action' => 'index'));
+                    
             }
             if (!empty($this->data)) {
                     $jobData = $this->prepareJobForDB($this->data);
@@ -144,6 +146,7 @@ class JobsController extends AppController {
                     if ($this->Job->save($jobData)) {
                             $this->Session->setFlash(__('The job has been saved', true));
                             $this->redirect(array('action' => 'index'));
+                            
                     } else {
                             $this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
                     }
@@ -152,8 +155,9 @@ class JobsController extends AppController {
             if (empty($this->data)) {
                     $dbData = $this->Job->read(null, $id);
                     if ($dbData['Job'] ['user_id'] != $this->Session->read('Auth.User.id')) {
-                        $this->Session->seFlash('You cannot edit this job. Please edit jobs that you own');
+                        $this->Session->setFlash('You cannot edit this job. Please edit jobs that you own');
                         $this->redirect(array('action' => 'index'));
+                        
                     }
                     $this->data = $this->prepareJobForDisplay($dbData);                        
                     $selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			
@@ -166,16 +170,19 @@ class JobsController extends AppController {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for job', true));
 			$this->redirect(array('action'=>'index'));
+            
 		}
                 $this->Job->updateAll(array ('published' => 1),
                                       array ('Job.id' => $id));
 		$this->redirect(array('action' => 'index'));
+        
 	}
         
     function unpublish($id = null) {
         if (!$id) {
                 $this->Session->setFlash(__('Invalid id for job', true));
                 $this->redirect(array('action'=>'index'));
+                
         }
         $this->Job->updateAll(array ('published' => 0),
                               array ('Job.id' => $id));
@@ -242,6 +249,7 @@ class JobsController extends AppController {
             if (!$id && empty($this->data)) {
                     $this->Session->setFlash(__('Invalid job', true));
                     $this->redirect(array('action' => 'index'));
+                    
             }
             if (!empty($this->data)) {
                     $jobData = $this->prepareJobForDB($this->data);

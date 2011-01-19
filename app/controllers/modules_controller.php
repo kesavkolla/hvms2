@@ -11,6 +11,7 @@ class ModulesController extends AppController {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid module', true));
 			$this->redirect(array('action' => 'index'));
+			
 		}
 		$this->set('module', $this->Module->read(null, $id));
 	}
@@ -21,6 +22,7 @@ class ModulesController extends AppController {
 			if ($this->Module->save($this->data)) {
 				$this->Session->setFlash(__('The module has been saved', true));
 				$this->redirect(array('action' => 'index'));
+				
 			} else {
 				$this->Session->setFlash(__('The module could not be saved. Please, try again.', true));
 			}
@@ -33,11 +35,13 @@ class ModulesController extends AppController {
 		if (!$id && empty($this->data)) {
 			$this->Session->setFlash(__('Invalid module', true));
 			$this->redirect(array('action' => 'index'));
+			
 		}
 		if (!empty($this->data)) {
 			if ($this->Module->save($this->data)) {
 				$this->Session->setFlash(__('The module has been saved', true));
 				$this->redirect(array('action' => 'index'));
+				
 			} else {
 				$this->Session->setFlash(__('The module could not be saved. Please, try again.', true));
 			}
@@ -53,13 +57,16 @@ class ModulesController extends AppController {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for module', true));
 			$this->redirect(array('action'=>'index'));
+			
 		}
 		if ($this->Module->delete($id)) {
 			$this->Session->setFlash(__('Module deleted', true));
 			$this->redirect(array('action'=>'index'));
+			
 		}
 		$this->Session->setFlash(__('Module was not deleted', true));
 		$this->redirect(array('action' => 'index'));
+		
 	}
 }
 ?>

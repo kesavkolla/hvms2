@@ -1,7 +1,7 @@
 <?php
 
 class AppController extends Controller {
-  public $components = array('RequestHandler', 'Session');
+  public $components = array('RequestHandler', 'Session', 'Auth');
   
   // called before every single action
   function beforeFilter() {
@@ -11,6 +11,9 @@ class AppController extends Controller {
           // this method is in the app_controller.php file
           $this->checkAdminSession();
       }
+      
+      $user = $this->Auth->user();
+      $this->{$this->modelClass}->userType = $user['User']['type']; 
   }
     
   function checkAdminSession() {
@@ -18,9 +21,10 @@ class AppController extends Controller {
 	if (!$this->Session->read('Auth.User.type') == 'admin') {
 		// set flash message and redirect
 		$this->Session->setFlash('You need to be logged in as an administrator to access this area');
-		$this->redirect('/');
+		$this->redirect(array('controller' => 'users', 'action' => 'login', 'admin' => false));
 	}
   }
+
 
 }
 ?>

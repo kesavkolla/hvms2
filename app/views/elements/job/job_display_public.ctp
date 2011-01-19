@@ -1,6 +1,7 @@
+<?php $userType = $this->Session->read('Auth.User.type'); ?>
+
 <?php
 		$curJob = $job['Job'] ;
-		
 		$statusStyle = 'active';
 		if (!$curJob['published'] || $curJob['status'] != 1) {
 				$statusStyle = 'closed';
@@ -70,8 +71,14 @@
                 </div>						
             </div>
 		</div>
+	    
     <?php
+    if ($userType == 'admin') {
+        echo $this->element('job/job_admin_display', array('job' => $job));
+    }
+    else {
         echo $this->element('interest', array('userFlagged' => $userFlagged,
                                               'interestId' => $curJob['id']));
+	}
     ?>
 </div>

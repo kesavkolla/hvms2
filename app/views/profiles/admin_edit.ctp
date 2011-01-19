@@ -5,11 +5,10 @@
         <h2><?php __('Admin Profile');?></h2>
     </div>
 
-
 <div class="profiles form">
-<?php echo $this->Form->create('Profile', array('id' => 'ProfileAddForm',
+<?php echo $form->create('Profile', array('id' => 'ProfileAddForm',
 												'enctype' => 'multipart/form-data',
-												
+												'url' => 'edit/' . $this->data['User']['id'],
 												)
 								);?>
 	<?php

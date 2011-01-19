@@ -58,4 +58,10 @@
 		</ul>
 		</div>						
 	</div>
+	<?php
+	if ($userType == 'admin') {
+        echo $this->element('profile/profile_admin_display', array('profile' => $profile));
+    }
+	?>
+    
 </div>

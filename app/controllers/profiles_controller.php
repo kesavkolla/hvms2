@@ -10,7 +10,9 @@ class ProfilesController extends AppController {
 		if ($this->Session->read('Auth.User.type') == 'cand') {
 			$this->Session->setFlash('You are not authorized to view this page.');
 			$this->redirect('/');
+			
 		}
+		parent::beforeFilter();
 		
 	}
 	
@@ -23,9 +25,10 @@ class ProfilesController extends AppController {
         $conditions =  array (
                                 'Profile.published' => 1,
                                 'Profile.status' => 1,
-								'Profile.company_id !=' . $this->Session->read('Auth.User.hospital_id') // exclude employees from the searcher's company
                                );
-		
+		if ($this->Session->read('Auth.User.hospital_id')) {
+			$conditions[] = 'Profile.company_id !=' . $this->Session->read('Auth.User.hospital_id'); // exclude employees from the searcher's company
+		}
 		$joinsArray [] =  array(
 						'table' => 'users',
 						'alias' => 'Users',
@@ -124,6 +127,7 @@ class ProfilesController extends AppController {
 		if (!$uid) {
 			$this->Session->setFlash(__('Invalid profile', true));
 			$this->redirect('/');
+			
 		}
 		$this->set('profile', $this->Profile->find('first',
 												   array(
@@ -152,6 +156,7 @@ class ProfilesController extends AppController {
 		if (!$uid) {
 			$this->Session->setFlash(__('Invalid profile', true));
 			$this->redirect('/');
+			
 		}
 	
 		if (!empty($this->data)) {
@@ -165,6 +170,7 @@ class ProfilesController extends AppController {
 					else { // this will probably never happen, but better safe than sorry
 						$this->Session->setFlash('You cannot edit this profile.');
 						$this->redirect('/');
+						
 					}
 					
 				}
@@ -242,10 +248,6 @@ class ProfilesController extends AppController {
 	}
 
 	private function prepareProfileForDB($data) {
-			// add user id
-			$uid = $this->Session->read('Auth.User.id');
-			$data['Profile']['user_id'] = $uid;
-	
 			$profileFormData = &$data['Profile'];
 
 			// startavailability
@@ -327,10 +329,28 @@ class ProfilesController extends AppController {
 		if (!$uid) {
 			$this->Session->setFlash(__('Invalid profile', true));
 			$this->redirect('/');
+			
 		}
-		
+
+		$profileDBData = $this->Profile->find('all',
+								array('conditions' => array(
+										 'Profile.user_id' => $uid
+										 ),
+										'contain' => array(
+											'Module.id' => array(),
+											'User',
+											'ProfileRole'
+										),
+									)
+							);
+
+		$dbData = $profileDBData ? $profileDBData[0] : null;
 		if (!empty($this->data)) {
 			$this->data['Profile']['user_id'] = $uid;
+			if ($dbData) {
+				$this->data['Profile']['id'] = $dbData['Profile']['id'];
+			}
+			
 			$fileUpload = $this->fileUpload();
 			$fileErrors = $fileUpload ? $fileUpload['error'] : null;
 			if (!$fileErrors) {
@@ -346,19 +366,6 @@ class ProfilesController extends AppController {
 				$this->Profile->invalidate('resume_upload', $fileErrors);
 			}
 		}
-		$profileDBData = $this->Profile->find('all',
-								array('conditions' => array(
-										 'Profile.user_id' => $uid
-										 ),
-										'contain' => array(
-											'Module.id' => array(),
-											'User',
-											'ProfileRole'
-										),
-									)
-							);
-
-		$dbData = $profileDBData ? $profileDBData[0] : null;
 		if ($dbData) {
 			if ($dbData['Profile']['resume_name']) {
 				$fileName = $dbData['Profile']['resume_name'];
@@ -368,6 +375,9 @@ class ProfilesController extends AppController {
 				fwrite($fp, stripslashes($content));
 				fclose($fp);
 			}
+			// add user id
+			$uid = $this->Session->read('Auth.User.id');
+			$dbData['Profile']['user_id'] = $uid;
 			$this->data = $this->prepareProfileForDisplay($dbData);
 			$selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			
 		}

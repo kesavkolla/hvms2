@@ -1,3 +1,5 @@
+<?php $userType = $this->Session->read('Auth.User.type'); ?>
+
 <?php $curJob = $job['Job'] ;?>
 <div class="job">
     <div class="title"><?php echo $curJob['title']; ?></div>
@@ -91,9 +93,15 @@
     ?>
     </div>
     
+    <?php
+    if ($userType == 'admin') {
+        echo $this->element('job/job_admin_display', array('job' => $job));
+    }
+    ?>
+    
     <div class="edit">
         <?php
-            echo $this->Html->link(__('Edit this job.', true), array('action' => 'edit', $job['Job']['id']));
+            echo $this->Html->link(__('Edit this job.', true), array('controller' => 'jobs', 'action' => 'edit', $job['Job']['id']));
         ?>
     </div>
 </div>

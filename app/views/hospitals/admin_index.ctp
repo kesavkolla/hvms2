@@ -38,9 +38,7 @@
 		<td><?php echo $hospital['Hospital']['domainsallowed']; ?>&nbsp;</td>
 		<td><?php echo $hospital['Hospital']['url']; ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $hospital['Hospital']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $hospital['Hospital']['id'])); ?>
-			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $hospital['Hospital']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $hospital['Hospital']['id'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -63,7 +61,5 @@
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('New Hospital', true), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Profiles', true), array('controller' => 'profiles', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Profile', true), array('controller' => 'profiles', 'action' => 'add')); ?> </li>
 	</ul>
 </div>

@@ -32,6 +32,10 @@ echo $this->element('header');
 echo $this->Session->flash();
 echo $this->Session->flash('auth');
 echo $content_for_layout;
+
+if ($session->read('Auth.User.type') == 'admin')  {
+    echo $this->element('admin_actions');	
+}
 ?>
 </div>
 </div>

@@ -83,6 +83,83 @@ class InterestsController extends AppController {
 		 
 		$this->set('interestItems' , $interestItems);
 	}
+	
+	function admin_index() {
+		$searchParams = $this->params['url'];
+		if (!empty($this->params)) {
+			$conditions = array();
+			$contain = array('User');
+			$contain['Profile'] = array(
+											'Module.modulename' => array (
+													'Vendor.vendorname'
+											),
+											'User.id'
+										   );
+			$contain['Job'] = array(
+												'Module.modulename' => array (
+													'Vendor.vendorname'
+											)
+										   );
+			if (isset($searchParams['user_id'])) {
+				$conditions['Interest.user_id'] = $searchParams['user_id'];
+
+			}
+			if (isset($searchParams['profile_id'])) {
+				$conditions['Interest.interest_id'] = $searchParams['profile_id'];
+				$conditions['Interest.interest_type'] = 'cand';
+				unset($contain['Job']);
+			}			
+			if (isset($searchParams['job_id'])) {
+				$conditions['Interest.interest_id'] = $searchParams['job_id'];
+				$conditions['Interest.interest_type'] = 'job';
+				unset($contain['Profile']);
+			}
+			
+			$this->paginate = array (
+								'conditions' => $conditions,
+								'contain' => $contain
+			);
+			$interests = $this->paginate();
+			
+			$this->set('interests', $interests);
+		}
+	}
+	
+	function admin_edit($id = null) {
+		if (!$id && empty($this->data)) {
+			$this->Session->setFlash(__('Invalid interest', true));
+			$this->redirect(array('action' => 'index'));
+			
+		}
+		if (!empty($this->data)) {
+			if ($this->Interest->save($this->data)) {
+				$this->Session->setFlash(__('The Interest has been saved', true));
+				$this->redirect(array('action' => 'index'));
+				
+			} else {
+				$this->Session->setFlash(__('The Interest could not be saved. Please, try again.', true));
+			}
+		}
+		if (empty($this->data)) {
+			$contain = array('User');
+			$contain['Profile'] = array(
+											'Module.modulename' => array (
+													'Vendor.vendorname'
+											),
+											'User.id'
+										   );
+			$contain['Job'] = array(
+												'Module.modulename' => array (
+													'Vendor.vendorname'
+											)
+										   );
+			$this->data = $this->Interest->find('first',
+												array(
+													  'conditions' => array('Interest.id' => $id),
+													  'contain' => $contain
+													 ));
+		}
+	}
 }
    
 ?>

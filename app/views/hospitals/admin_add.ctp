@@ -23,7 +23,6 @@
 	<ul>
 
 		<li><?php echo $this->Html->link(__('List Hospitals', true), array('action' => 'index'));?></li>
-		<li><?php echo $this->Html->link(__('List Profiles', true), array('controller' => 'profiles', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Profile', true), array('controller' => 'profiles', 'action' => 'add')); ?> </li>
+
 	</ul>
 </div>

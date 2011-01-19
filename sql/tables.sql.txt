@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS `interests` (
   `interest_id` int(11) NOT NULL,
   `interest_type` enum('job','cand') NOT NULL,
   `Comment` varchar(400) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 0,  
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`,`interest_id`,`interest_type`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='user_id is the interested user. interest_id is either a job ' AUTO_INCREMENT=2 ;
