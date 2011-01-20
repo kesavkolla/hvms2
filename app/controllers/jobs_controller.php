@@ -74,7 +74,7 @@ class JobsController extends AppController {
               
         $this->paginate =  array (
                                     'fields' => array (
-                                      'DISTINCT Job.id', 'Job.title', 'Job.jobtype', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id', 'Job.published', 'Job.status'
+                                      'DISTINCT Job.id', 'Job.title', 'Job.jobtype', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id', 'Job.published', 'Job.status', 'Job.trusted'
                                     ),
                                     'joins' => $joinsArray,
                                     'conditions' => $conditions,

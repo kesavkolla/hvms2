@@ -3,17 +3,19 @@ class InterestsController extends AppController {
 	public $name = 'Interests';
 	public $helpers = array('Inputs', 'Number', 'Time');
 	
-	public $components = array('Session');
+	public $components = array('Session', 'Email');
 
     function flag() {
         $this->autoRender = false;
+
         if (isset($this->params['form']) && isset($this->params['form']['interestId'])) {
 			$interestData = $this->getInterestData($this->params['form']['interestId']);
 			
 			$this->Interest->recursive = -1;
-
+			
 			if ($this->Interest->save($interestData)) {
 			   echo 1;
+			   $this->sendInterestEmail($interestData);
 			}
 			echo '';
         }     
@@ -47,6 +49,34 @@ class InterestsController extends AppController {
 									  'interest_type' => $interestType,
 									  );
 		return $interestData;
+	}
+	
+	private function sendInterestEmail($interestData) {
+        $this->set('userID', $interestData['Interest']['user_id']);
+
+		$interest_type = $interestData['Interest']['interest_type'];
+		if ($interest_type == 'cand') {
+            $this->set('interestType', 'candidate');
+            $this->set('interestText', 'See all interests in this profile');
+			$interestQueryString = array('profile_id' => $interestData['Interest']['interest_id']);
+			$this->set('interestQueryString', $interestQueryString);
+		}
+		else if ($interest_type == 'job') {
+            $this->set('interestType', 'job');
+            $this->set('interestText', 'See all interests in this job');
+			$interestQueryString = array('job_id' => $interestData['Interest']['interest_id']);
+			$this->set('interestQueryString', $interestQueryString);
+		}
+		
+		$this->Email->to = 'admin@hvms.com';
+		$this->Email->from = 'HealthVMS <teju.prasad@gmail.com>'; // TODO - put in config
+		$this->Email->subject = 'Interest Indicated';
+		$this->Email->template = 'new_interest';
+		
+		//$this->Email->delivery = 'debug';
+
+		$this->Email->send();
+		//pr($this->Session->read('Message.email.message'));
 	}
 	
 	function index() {

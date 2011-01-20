@@ -51,6 +51,10 @@
 								 );
 		echo '</div>';
 	?>
+
+	<?php
+			echo $this->Form->Input('trusted');
+	?>
 	
 	<div class="input">
 		<label>Skills Required</label>

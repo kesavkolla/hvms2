@@ -54,7 +54,7 @@ dt {
     float: left;
     font-weight: bold;
     width: 200px;
-        clear: both;
+    clear: both;
 
 }
 
@@ -133,6 +133,20 @@ a.teaser-button {
     margin-top: 10px;
     text-align: center;
 }
+
+#teaser h5 {
+    font-weight: bold;
+    font-size: 14px;
+    padding-bottom: 5px;
+}
+.teaser-item {
+    padding: 3px 0px; 
+}
+
+.teaser-heading {
+    font-style: italic;
+}
+
 #header {
 }
 
@@ -297,6 +311,13 @@ form .downloadlink {
 }
 /* end form css */
 
+/* common to both jobs and profiles */
+.posting-badge {
+    position: absolute;
+    right: -40px;
+    top: -10px;
+}
+
 /* skills formatting */
 .skillbox {
     display: inline-block;
@@ -351,6 +372,7 @@ form .downloadlink {
     -moz-border-radius: 15px;
     border-radius: 15px;
     margin-bottom: 15px;
+    position: relative;
 }
 
 .job h5 {
@@ -410,6 +432,7 @@ form .downloadlink {
     -moz-border-radius: 15px;
     border-radius: 15px;
     margin-bottom: 15px;
+    position: relative;
 }
 
 .profile h5 {

@@ -6,8 +6,15 @@
 		if (!$curJob['published'] || $curJob['status'] != 1) {
 				$statusStyle = 'closed';
 		}
+
 ?>
-<div class="job clearfix $statusStyle <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curJob['id']?>">
+<div class="job clearfix <?php echo $statusStyle ?> <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curJob['id']?>">
+		<?php
+		if ($curJob['trusted']) {
+			echo "<img class=\"posting-badge\" src=\"{$this->webroot}img/verified_badge.png\" alt=\"Recommended by HealthVMS\" title=\"Recommended by HealthVMS\" />";
+		}
+		?>
+		
 		<div class="title"><?php echo $curJob['title']; ?></div>
         <?php
         if (isset($curJob['location'])) { 

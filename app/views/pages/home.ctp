@@ -14,21 +14,24 @@
 	</div>
 	
 	<div id="teaser">
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
-		Teaser content here
+		<h5>Sneak Peek - Openings and Candidates</h5>
+	<?php
+		foreach ($trustedDisplay as $trustedShow) {
+			if (isset($trustedShow['Profile'])) {
+				$prefix = 'Available to hire: ';
+				$title = $trustedShow['Profile']['title'];
+			}
+			else if (isset($trustedShow['Job'])){
+				$prefix = 'Job opening: ';
+				$title = $trustedShow['Job']['title'];
+			}
+			echo '<div class="teaser-item">' .
+			     "<span class=\"teaser-heading\">$prefix</span>" .
+				 $title .
+				 '</div>';
+		
+		}
+	?>
 	</div>
 
 <?php if (!$session->read('Auth.User.username')) {	 ?>

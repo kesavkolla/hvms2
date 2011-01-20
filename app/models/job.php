@@ -34,5 +34,21 @@ class Job extends AppModel {
         return $results;
     }
     
+    // get 10 trusted jobs that are public
+    function trustedTen($fields = null) {
+        $this->recursive = -1;
+        $conditions = array( 
+            'Job.trusted' => 1,
+            'Job.published' => 1 ,
+            'Job.status' => 1 
+
+        );     
+        return $this->find('all',
+                           array(
+                            'conditions' => $conditions,
+                            'limit' => 10,
+                            'order' => $this->name . '.id DESC',
+                            'fields' => $fields)); 
+    } 
 }
 ?>

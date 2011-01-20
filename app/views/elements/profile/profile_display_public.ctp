@@ -5,11 +5,16 @@
 	if (!$curProfile['published'] || $curProfile['status'] != 1) {
 			$statusStyle = 'closed';
 	}
+	
 ?>
 <?php $userType = $this->Session->read('Auth.User.type'); ?>
 
-<div class="profile clearfix $statusStyle <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curProfile['id']?>">
+<div class="profile clearfix <?php echo $statusStyle ?> <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curProfile['id']?>">
 	<?php
+		if ($curProfile['trusted']) {
+			echo "<img class=\"posting-badge\" src=\"{$this->webroot}img/verified_badge.png\" alt=\"Recommended by HealthVMS\" title=\"Recommended by HealthVMS\" />";
+		}
+		
 		if (isset($curProfile['title'])) {
 			echo '<div class="title">' . $curProfile['title'] . '</div>';
 		}

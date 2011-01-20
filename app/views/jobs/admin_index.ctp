@@ -20,6 +20,8 @@
 			<th><?php echo 'openings'; ?></th>
 			<th><?php echo 'status'; ?></th>
 			<th><?php echo 'published'; ?></th>
+			<th><?php echo 'trusted'; ?></th>
+
 			<th class="actions"><?php __('Actions');?></th>
 	</tr>
 	<?php
@@ -51,6 +53,7 @@
 		<td><?php echo $job['Job']['openings']; ?>&nbsp;</td>
 		<td><?php echo $job['Job']['status'] ? 'Active' : 'Inactive'; ?>&nbsp;</td>
 		<td><?php echo $job['Job']['published'] ? 'Yes' : 'No'; ?>&nbsp;</td>
+		<td><?php echo $job['Job']['trusted'] ? 'trusted' : '-'; ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $job['Job']['id'])); ?>
 		</td>

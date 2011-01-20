@@ -34,11 +34,20 @@ class Profile extends AppModel {
                             ),
     );
     
-    function published($fields = null) { 
+    // get 10 trusted profiles
+    function trustedTen($fields = null) {
+        $this->recursive = -1;
         $conditions = array( 
-            $this->name . '.published' => 1 
+            'Profile.trusted' => 1,
+            'Profile.published' => 1 ,
+            'Profile.status' => 1
         );     
-        return $this->findAll($conditions, $fields); 
+        return $this->find('all',
+                           array(
+                            'conditions' => $conditions,
+                            'limit' => 10,
+                            'order' => $this->name . '.id DESC',
+                            'fields' => $fields)); 
     } 
 }
 ?>

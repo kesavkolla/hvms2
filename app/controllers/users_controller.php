@@ -8,6 +8,12 @@ class UsersController extends AppController {
     function beforeFilter() {
             $this->Auth->allow('forgot', 'index', 'register', 'register_cand', 'register_hosp', 'confirm', 'checkEmail', 'auto_reset_pw');
             $this->Auth->autoRedirect = false;
+            $this->Email->smtpOptions = array( 
+                                            'port' => '465', 
+                                            'timeout' => '30', 
+                                            'host' => 'ssl://smtp.gmail.com', 
+                                            'username' => '<teju.prasad@gmail.com>', 
+                                            'password' => 'mypass'); 
             parent::beforeFilter();
             //$this->Security->blackHoleCallback = 'forceSsl';
             //$this->Security->requireSecure('login', 'register');
@@ -136,16 +142,16 @@ class UsersController extends AppController {
             $this->set('otp', $resetInfo['otp']);
 
             $this->Email->to = $user['username'];
-            $this->Email->from = 'HealthVMS <noreply@healthvms.com>'; // TODO - put in config
+            $this->Email->from = 'HealthVMS <teju.prasad@gmail.com>'; // TODO - put in config
             $this->Email->subject = 'Password reset request';
             $this->Email->template = 'reset_pw';
             
-            $this->Email->delivery = 'debug';
+            //$this->Email->delivery = 'debug';
     
             $this->Email->send();
-            pr($this->Session->read('Message.email'));
-
-        }
+            pr($this->Session->read('Message.email.message'));
+            $this->Session->setFlash('We\'ve sent  you a link at ' . $user['username'] . ', please click on it to reset your password');
+        } 
     }
 
     function auto_reset_pw($OTP, $expiry, $userID)  {
