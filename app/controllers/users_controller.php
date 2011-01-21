@@ -124,11 +124,12 @@ class UsersController extends AppController {
         if ($this->User->getConfirmationHash() == $hash) {
             $this->User->set('status', Configure::read('user.STATUS_VERIFIED'));
             if ($this->User->save(null, false)) {
-                $this->Session->setFlash('Thank you for confirming your account. (TODO: redirect to somplace, my account maybe?)');
+                $this->Session->setFlash('Thank you for confirming your account. Please login to start using HealthVMS.');
+                $this->redirect(array('controller' => 'users', 'action' => 'login'));
+                $this->Auth->loginRedirect = array('controller' => 'profiles', 'action' => 'edit');
             }
             else {
-                echo 'error';
-                pr ($this->User->invalidFields());
+                $this->Session->setFlash('There was an error confirming your account. Please contact HeealthVMS for help.');
             }
         }
     }

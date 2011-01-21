@@ -30,10 +30,10 @@
             }
             else if ($session->read('Auth.User.type') == 'hosp') {
                 $tabs['Find Employees'] = array('controller' => 'profiles', 'action' => 'search');
-                $tabs['Manage My Jobs'] = array('controller' => 'jobs', 'action' => 'index');                
+                $tabs['My Jobs'] = array('controller' => 'jobs', 'action' => 'index');                
             }
             
-            $tabs['My Dashboard'] = array('controller' => 'interests', 'action' => 'index');
+            $tabs['My Interests'] = array('controller' => 'interests', 'action' => 'index');
         }
     ?>
     <div id="nav-left">

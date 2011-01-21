@@ -11,7 +11,7 @@
     echo $html->script('jq-min');
     echo $html->script('jquery.validate.min');
     echo $html->script('jquery-ui-1.8.6.custom.min');
-
+    echo $html->script('common');
 ?> 
 <?php
    echo $html->css('reset');
