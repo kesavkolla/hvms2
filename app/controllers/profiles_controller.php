@@ -7,7 +7,8 @@ class ProfilesController extends AppController {
 	function beforeFilter() {
 		
 		// the user should not be a job seeker
-		if ($this->Session->read('Auth.User.type') == 'cand') {
+		if ($this->params['action'] == 'search' &&
+				$this->Session->read('Auth.User.type') == 'cand' ) {
 			$this->Session->setFlash('You are not authorized to view this page.');
 			$this->redirect('/');
 			

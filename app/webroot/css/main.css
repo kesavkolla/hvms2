@@ -498,7 +498,7 @@ form .downloadlink {
 #left-nav .skillbox label {
     padding: 2px 0px 10px 0px;
     display: block;
-    margin-left: 25px;
+    width: 150px;
 }
 
 #left-nav .skill {
