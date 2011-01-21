@@ -60,11 +60,10 @@
 				$resumeLink = '';
 				$resumeLabel = 'Upload Resume';
 		}
-		echo '<div class="input file">';
-		echo "<label for=\"ProfileResumeUpload\">$resumeLabel</label>";
-		echo $resumeLink;
-		echo $this->Form->file('resume_upload');
-		echo '</div>';
+		
+		echo $form->input('resume',array('type'=>'file',
+										 'label' => $resumeLabel,
+										 'after' => $resumeLink));
 ?>
 
 <?php

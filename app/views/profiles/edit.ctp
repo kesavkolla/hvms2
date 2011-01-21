@@ -66,11 +66,10 @@
 					$resumeLink = '';
 					$resumeLabel = 'Upload Resume';
 			}
-			echo '<div class="input file">';
-			echo "<label for=\"ProfileResumeUpload\">$resumeLabel</label>";
-			echo $resumeLink;
-			echo $this->Form->file('resume_upload');
-			echo '</div>';
+			echo $form->input('resume',array('type'=>'file',
+											 'label' => $resumeLabel,
+											 'after' => $resumeLink));
+
 	?>
 		
 		<div class="input">
@@ -88,7 +87,7 @@
 										'options' => $this->Inputs->getPublishedStatuses(),
 										'type' => 'select',
 										'showEmpty' => false,
-										'after' => '<span class="hint">Your profile is private until you publish it</span>',
+										'after' => '<span class="hint">Your profile will be visible to employers once you publish it</span>',
 									)
 									 );
 			echo '</div>';

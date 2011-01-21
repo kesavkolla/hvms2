@@ -81,7 +81,6 @@ class PagesController extends AppController {
 		}
 	
 		if ($page == 'home') {
-			
 			$trustedProfiles = $this->Profile->trustedTen('title');
 			$trustedJobs = $this->Job->trustedTen('title');
 			$trustedDisplay = array_merge($trustedProfiles, $trustedJobs);
@@ -90,5 +89,10 @@ class PagesController extends AppController {
 		}
 		$this->set(compact('page', 'subpage', 'title_for_layout'));
 		$this->render(implode('/', $path));
+	}
+	
+	function beforeFilter () {
+		$this->Auth->allow('display');
+
 	}
 }

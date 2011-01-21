@@ -36,7 +36,7 @@ class ProfilesController extends AppController {
 						'type' => 'inner',
 						'foreignKey' => true,
 						'conditions'=> array('Users.id = Profile.user_id',
-											 //'Users.type = "cand"',
+											 'Users.type = "cand"',
 											)
 					);
 
@@ -77,15 +77,18 @@ class ProfilesController extends AppController {
                 );
            
             }
-
+			
             if ($roles) {
-                $joinsArray [] = array (
-                                    'table' => 'profile_roles',
-                                    'alias' => 'ProfileRoles',
-                                    'type' => 'inner',
-                                    'conditions' => array('Profile.id = ProfileRoles.profile_id',
-														  'ProfileRoles.role' => $roles)
-                );            }
+				if ($roles[0] || count($roles) > 1) { // not just empty option only selected
+					$joinsArray [] = array (
+										'table' => 'profile_roles',
+										'alias' => 'ProfileRoles',
+										'type' => 'inner',
+										'conditions' => array('Profile.id = ProfileRoles.profile_id',
+															  'ProfileRoles.role' => $roles)
+					);
+				}
+			}
 
             $searchHeading = 'Search Results';
         }
@@ -177,16 +180,16 @@ class ProfilesController extends AppController {
 				}
 				
 				$profileData = $this->prepareProfileForDB($this->data);
-				
+				$profileData['Profile']['user_id'] = $uid;
 				if ($this->Profile->saveAll($profileData)) {
-					$this->Session->setFlash(__('Your profile has been saved', true));
+					$this->Session->setFlash(__('Your profile has been saved. <br/>To see what it will look like to employers, please click "View Profile" below.', true));
 				}
 				else {
 					$this->Session->setFlash(__('The profile could not be saved. Please, try again.', true));
 				}
 			}
 			else if (isset($fileErrors)) {
-				$this->Profile->invalidate('resume_upload', $fileErrors);
+				$this->Profile->invalidate('resume', $fileErrors);
 			}
 		}
 		$profileDBData = $this->Profile->find('all',
@@ -221,13 +224,13 @@ class ProfilesController extends AppController {
 	
 	private function fileUpload() {
 			$retval = array();
-			if (!isset($this->data['Profile']['resume_upload'])) {
+			if (!isset($this->data['Profile']['resume'])) {
 				return $retval;
 			}
 			
 			$allowedExtensions = array('txt', 'doc', 'docx', 'pdf', 'rtf');		
-			$resumeData = $this->data['Profile']['resume_upload'];
-			
+			$resumeData = $this->data['Profile']['resume'];
+
 			$retval['error'] = null;
 			if (!$resumeData['error'] && $resumeData['size'] > 0) {
 					$fileName = $resumeData['name'];
@@ -249,8 +252,7 @@ class ProfilesController extends AppController {
 	}
 
 	private function prepareProfileForDB($data) {
-			$profileFormData = &$data['Profile'];
-
+			$profileFormData = &$data['Profile'];			
 			// startavailability
 			 if (isset($profileFormData['startavailability-other']) && $profileFormData['startavailability'] == 'Other') {
 				$profileFormData['startavailability'] .= Configure::read('field.COMMA_ENCODE') . $profileFormData['startavailability-other'];
@@ -262,8 +264,10 @@ class ProfilesController extends AppController {
 			{
 				$roleData = $profileFormData['role'] ? $profileFormData['role'] : array();
 				$profileRoleData = array();
+				if (isset($profileFormData['id'])) {
+					$this->ProfileRole->deleteAll(array('ProfileRole.profile_id' => $profileFormData['id']));	
+				}
 				
-				$this->ProfileRole->deleteAll(array('ProfileRole.profile_id' => $profileFormData['id']));
 				foreach ($roleData as $role) {
 					if (isset($profileFormData['role-other']) && $role == 'Other') {
 						$role .= Configure::read('field.COMMA_ENCODE') . $profileFormData['role-other'];
@@ -364,7 +368,7 @@ class ProfilesController extends AppController {
 				}
 			}
 			else if (isset($fileErrors)) {
-				$this->Profile->invalidate('resume_upload', $fileErrors);
+				$this->Profile->invalidate('resume', $fileErrors);
 			}
 		}
 		if ($dbData) {

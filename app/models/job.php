@@ -17,7 +17,7 @@ class Job extends AppModel {
 
     
     public function find($conditions = null, $fields = array(), $order = null, $recursive = null) {
-        if ($this->userType == 'admin') {
+        if (isset($this->userType )&& $this->userType == 'admin') {
             $this->contain("{$this->User->alias}.Hospital.code");
         }
         return parent::find($conditions, $fields, $order, $recursive);

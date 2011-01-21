@@ -15,6 +15,7 @@
 										 'size' => 4,
 										 'label' => 'Role',
 										 'class' => 'multi-select',
+										 'empty' => '---',
 										 'options' => $this->Inputs->getJobRoles()));
 
 	?>

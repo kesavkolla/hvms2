@@ -11,6 +11,7 @@
                                     'label' => 'Register as a ' ));
 
     echo $form->input('username', array('id' => 'username',
+                                        'label' => 'Email',
                                         'after' => '<span id="userinfo"></span>'));
     echo $form->input('tmp_password', array('label' => 'Password', 'type' => 'password'));
     echo $form->input('confirm_password', array('type' => 'password'));

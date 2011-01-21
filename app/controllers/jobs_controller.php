@@ -8,7 +8,8 @@ class JobsController extends AppController {
         
     function beforeFilter() {
         // the user should not be a job poster
-        if ($this->Session->read('Auth.User.type') == 'hosp') {
+        if ($this->params['action'] == 'search' &&
+            $this->Session->read('Auth.User.type') == 'hosp') {
             $this->Session->setFlash('You are not authorized to view this page.');
             $this->redirect('/');
             
@@ -40,7 +41,7 @@ class JobsController extends AppController {
             $selectedSkills = isset($this->data['Module']) ? $this->data['Module'] : array();
             $interested = $this->data['Job']['interested'];
             $roles = $this->data['Job']['role'];
-            
+
             if ($selectedSkills) {
                 $joinsArray [] =  array(
                                         'table' => 'jobs_skills',
