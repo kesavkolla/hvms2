@@ -3,10 +3,10 @@
 class UsersController extends AppController {
     public $scaffold;
     public $uses = array('User', 'Hospital');
-    public $components = array('Auth', /*'Security',*/ 'Session', 'Email', 'Cookie', 'RequestHandler');
+    public $components = array('Auth', 'Security', 'Session', 'Email', 'Cookie', 'RequestHandler');
     
     function beforeFilter() {
-            $this->Auth->allow('forgot', 'index', 'register', 'register_cand', 'register_hosp', 'confirm', 'checkEmail', 'auto_reset_pw');
+            $this->Auth->allow('forgot', 'index', 'register',  'confirm', 'checkEmail', 'auto_reset_pw');
             $this->Auth->autoRedirect = false;
             $this->Email->smtpOptions = array( 
                                             'port' => '465', 
@@ -14,9 +14,9 @@ class UsersController extends AppController {
                                             'host' => 'ssl://smtp.gmail.com', 
                                             'username' => '<teju.prasad@gmail.com>', 
                                             'password' => 'mypass'); 
-            parent::beforeFilter();
-            //$this->Security->blackHoleCallback = 'forceSsl';
-            //$this->Security->requireSecure('login', 'register');
+            $this->Security->blackHoleCallback = 'forceSsl';
+            $this->Security->requireSecure('login', 'register');
+             parent::beforeFilter();
     }
 
  
@@ -96,9 +96,6 @@ class UsersController extends AppController {
         }
     }
 
-    function forceSsl() {
-        $this->redirect('https://' . $_SERVER['SERVER_NAME'] . $this->here);
-    }
     
     function resetpw() {
         if ($this->data) {

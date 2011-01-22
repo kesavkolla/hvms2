@@ -27,6 +27,8 @@
                                  array('label' => 'Role',
                                        'options' => $this->Inputs->getJobRoles(),
                                        'fieldName' => 'role')));
+			
+			// set the default for openings
             echo $this->Form->input('openings', array('label' => 'Number of openings'));
 	?>
 	

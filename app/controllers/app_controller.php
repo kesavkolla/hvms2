@@ -1,7 +1,7 @@
 <?php
 
 class AppController extends Controller {
-  public $components = array('RequestHandler', 'Session', 'Auth');
+  public $components = array('RequestHandler', 'Session', 'Auth', 'Security');
   
   // called before every single action
   function beforeFilter() {
@@ -13,7 +13,14 @@ class AppController extends Controller {
       }
       
       $user = $this->Auth->user();
-      $this->{$this->modelClass}->userType = $user['User']['type']; 
+      $this->{$this->modelClass}->userType = $user['User']['type'];
+      if(isset($this->params[Configure::read('Routing.admin')])){
+        $this->Security->blackHoleCallback = 'forceSSL';
+		$this->Security->requireSecure();
+	  }
+      else if (!in_array($this->action, $this->Security->requireSecure)) {
+        $this->forceNonSSL();
+      }
   }
     
   function checkAdminSession() {
@@ -25,6 +32,16 @@ class AppController extends Controller {
 	}
   }
 
-
+  function forceSSL() {
+      $this->redirect('https://' . $_SERVER['SERVER_NAME'] . $this->here);
+  }
+  
+  function forceNonSSL() {
+    if ($this->RequestHandler->isSSL()) {
+      // force non-ssl only if they are on ssl to begin with 
+      // (requires RequestHandler component)
+      $this->redirect('http://' . env('SERVER_NAME') . $this->here);
+    }
+  }
 }
 ?>

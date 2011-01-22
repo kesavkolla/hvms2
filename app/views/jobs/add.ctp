@@ -28,7 +28,8 @@
 				     array('label' => 'Role',
 					   'options' => $this->Inputs->getJobRoles(),
 					   'fieldName' => 'role')));
-		echo $this->Form->input('openings', array('label' => 'Number of openings'));
+        
+		echo $this->Form->input('openings', array('label' => 'Number of openings', 'default' => 1));
 		//echo $this->Form->input('status');
 		//echo $this->Form->input('published');
 	?>

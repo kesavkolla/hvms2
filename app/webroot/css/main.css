@@ -367,7 +367,8 @@ form .downloadlink {
 .skillbox label {
     font-weight: normal;
     font-size: 13px;
-    width: auto;
+    width: 450px;
+    line-height: 2;
 }
 
 /* jobs formatting */
@@ -505,6 +506,7 @@ form .downloadlink {
     padding: 2px 0px 10px 0px;
     display: block;
     width: 150px;
+    line-height: 1.2;
 }
 
 #left-nav .skill {

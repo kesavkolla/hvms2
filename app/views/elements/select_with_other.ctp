@@ -24,12 +24,13 @@
 ?>
 </div>
 <script type="text/javascript">
-    if ($('#<?php echo $selectId ?>').val().indexOf('Other') >= 0 ) {
-        $('#<?php echo $textId ?>').show();
-        $('#<?php echo $textId ?>-hint').show();
-
+    if ($('#<?php echo $selectId ?>').val()) {
+        if ($('#<?php echo $selectId ?>').val().indexOf('Other') >= 0 ) {
+            $('#<?php echo $textId ?>').show();
+            $('#<?php echo $textId ?>-hint').show();
+        }
     }
-    
+
     $('#<?php echo $selectId ?>').change(function () {
         var selectElem = $('#<?php echo $selectId ?>');
         var textElem = $('#<?php echo $textId ?>');
