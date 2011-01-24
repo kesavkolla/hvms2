@@ -1,4 +1,4 @@
-<div class="input other-select">
+<div class="input other-select <?php echo isset($required) && $required ? 'required' : '' ?>">
     <label for="schedule1"><?php echo $label ?></label>
 <?php
     $options['Other'] = 'Other';
@@ -24,8 +24,10 @@
 ?>
 </div>
 <script type="text/javascript">
+
     if ($('#<?php echo $selectId ?>').val()) {
-        if ($('#<?php echo $selectId ?>').val().indexOf('Other') >= 0 ) {
+        var selectElem = $('#<?php echo $selectId ?>');
+        if (selectElem.val().toString().indexOf('Other') >= 0 ) {
             $('#<?php echo $textId ?>').show();
             $('#<?php echo $textId ?>-hint').show();
         }

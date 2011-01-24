@@ -14,13 +14,16 @@ class AppController extends Controller {
       
       $user = $this->Auth->user();
       $this->{$this->modelClass}->userType = $user['User']['type'];
+      
+      $this->Security->validatePost = false; // without this, form submission fails (all forms expect a security token)
       if(isset($this->params[Configure::read('Routing.admin')])){
         $this->Security->blackHoleCallback = 'forceSSL';
-		$this->Security->requireSecure();
+        $this->Security->requireSecure();      
 	  }
       else if (!in_array($this->action, $this->Security->requireSecure)) {
         $this->forceNonSSL();
       }
+      
   }
     
   function checkAdminSession() {

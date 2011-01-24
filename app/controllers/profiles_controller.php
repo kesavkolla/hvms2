@@ -4,8 +4,7 @@ class ProfilesController extends AppController {
 	public $name = 'Profiles';
 	public $helpers = array('Inputs');
 
-	function beforeFilter() {
-		
+	function beforeFilter() {	
 		// the user should not be a job seeker
 		if ($this->params['action'] == 'search' &&
 				$this->Session->read('Auth.User.type') == 'cand' ) {
@@ -162,7 +161,6 @@ class ProfilesController extends AppController {
 			$this->redirect('/');
 			
 		}
-	
 		if (!empty($this->data)) {
 			$fileUpload = $this->fileUpload();
 			$fileErrors = $fileUpload ? $fileUpload['error'] : null;
@@ -189,7 +187,8 @@ class ProfilesController extends AppController {
 				}
 			}
 			else if (isset($fileErrors)) {
-				$this->Profile->invalidate('resume', $fileErrors);
+				$this->Profile->invalidate('resume_upload', $fileErrors);
+				$this->Session->setFlash(__('The profile could not be saved. See errors below.', true));
 			}
 		}
 		$profileDBData = $this->Profile->find('all',
@@ -224,12 +223,12 @@ class ProfilesController extends AppController {
 	
 	private function fileUpload() {
 			$retval = array();
-			if (!isset($this->data['Profile']['resume'])) {
+			if (!isset($this->data['Profile']['resume_upload'])) {
 				return $retval;
 			}
 			
 			$allowedExtensions = array('txt', 'doc', 'docx', 'pdf', 'rtf');		
-			$resumeData = $this->data['Profile']['resume'];
+			$resumeData = $this->data['Profile']['resume_upload'];
 
 			$retval['error'] = null;
 			if (!$resumeData['error'] && $resumeData['size'] > 0) {
@@ -260,7 +259,7 @@ class ProfilesController extends AppController {
 			}
 			
 			// roles
-			if (isset($profileFormData['role']))
+			if (isset($profileFormData['role']) && $profileFormData['role'])
 			{
 				$roleData = $profileFormData['role'] ? $profileFormData['role'] : array();
 				$profileRoleData = array();
@@ -368,7 +367,7 @@ class ProfilesController extends AppController {
 				}
 			}
 			else if (isset($fileErrors)) {
-				$this->Profile->invalidate('resume', $fileErrors);
+				$this->Profile->invalidate('resume_upload', $fileErrors);
 			}
 		}
 		if ($dbData) {

@@ -66,7 +66,7 @@
 					$resumeLink = '';
 					$resumeLabel = 'Upload Resume';
 			}
-			echo $form->input('resume',array('type'=>'file',
+			echo $form->input('resume_upload',array('type'=>'file',
 											 'label' => $resumeLabel,
 											 'after' => $resumeLink));
 
