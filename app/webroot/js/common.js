@@ -11,29 +11,6 @@ $(document).ready(function ()
         }
     }
     
-    /* fix indexOf for IE */
-    if(!Object.prototype.indexOf){
-                Object.prototype.indexOf = function(obj){
-                    for(var i=0; i<this.length; i++){
-                        if(this[i]==obj){
-                            return i;
-                        }
-                    }
-                    return -1;
-                }
-    }
-    
-    /* fix indexOf for IE */
-    if(!String.prototype.indexOf){
-                String.prototype.indexOf = function(obj){
-                    for(var i=0; i<this.length; i++){
-                        if(this[i]==obj){
-                            return i;
-                        }
-                    }
-                    return -1;
-                }
-    }   
 });
 
     
