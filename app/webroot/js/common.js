@@ -10,7 +10,19 @@ $(document).ready(function ()
             els[i].className = els[i].getAttribute('type');
         }
     }
-    
 });
+
+var hvms = hvms || {};
+
+hvms.resetForm = function (formID) {
+    $(':input','#' + formID)
+    .not(':button, :submit, :reset, :hidden')
+    .val('')
+    .removeAttr('checked')
+    .removeAttr('selected')
+    .attr('selectedIndex', '-1');
+    
+    $('#' + formID).submit();
+}
 
     

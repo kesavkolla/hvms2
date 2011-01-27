@@ -61,7 +61,7 @@ class ProfilesController extends AppController {
                                         'alias' => 'ProfilesSkills',
                                         'type' => 'inner',
                                         'foreignKey' => true,
-                                        'conditions'=> array('ProfilesSkills.profile_id' => 'Profile.id',
+                                        'conditions'=> array('ProfilesSkills.profile_id = Profile.id',
 															 'ProfilesSkills.module_id' => $selectedSkills)
                                     );
                                        
@@ -180,7 +180,12 @@ class ProfilesController extends AppController {
 				$profileData = $this->prepareProfileForDB($this->data);
 				$profileData['Profile']['user_id'] = $uid;
 				if ($this->Profile->saveAll($profileData)) {
-					$this->Session->setFlash(__('Your profile has been saved. <br/>To see what it will look like to employers, please click "View Profile" below.', true));
+					if ($this->Session->read('Auth.User.type') == 'cand' ) {
+						$this->Session->setFlash(__('Your profile has been saved. <br/>To see what it will look like to employers, please click "View Profile" below.', true));
+					}
+					else {
+						$this->Session->setFlash(__('Your profile has been saved.', true));						
+					}
 				}
 				else {
 					$this->Session->setFlash(__('The profile could not be saved. Please, try again.', true));

@@ -27,7 +27,10 @@
 		</div>
 	</div>
 	
+	
 	<?php echo $this->Form->end(__('Search', true));?>
+	<?php echo $form->submit('Clear Search', array('type'=>'reset', 'id' => 'reset-search', 'onclick' => "hvms.resetForm('ProfileSearchForm'); "))?>
+
 </div>
 
 <div id="right-content">

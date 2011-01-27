@@ -229,6 +229,8 @@ form div.submit {
 	clear: both;
 	margin-top: 10px;
 }
+
+
 label {
 	font-size: 110%;
 	margin-bottom:3px;
@@ -269,6 +271,7 @@ div.radio label {
 	margin: 0 0 6px 20px;
 }
 
+input#reset-search,
 input.submit,
 input[type=submit] {
 	display: inline;
@@ -277,6 +280,7 @@ input[type=submit] {
         clear: both;
 }
 
+input#reset-search,
 form .submit input[type=submit] {
 	/*
         background:#62af56;

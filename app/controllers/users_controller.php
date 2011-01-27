@@ -6,7 +6,7 @@ class UsersController extends AppController {
     public $components = array('Auth', 'Security', 'Session', 'Email', 'Cookie', 'RequestHandler');
     
     function beforeFilter() {
-            $this->Auth->allow('forgot', 'index', 'register',  'confirm', 'checkEmail', 'auto_reset_pw');
+            $this->Auth->allow('forgot', 'index', 'register',  'confirm', 'auto_reset_pw', 'checkEmail');
             $this->Auth->autoRedirect = false;
             $this->Email->smtpOptions = array( 
                                             'port' => '465', 
@@ -15,7 +15,7 @@ class UsersController extends AppController {
                                             'username' => '<teju.prasad@gmail.com>', 
                                             'password' => 'mypass'); 
             $this->Security->blackHoleCallback = 'forceSsl';
-            $this->Security->requireSecure('login', 'register');
+            $this->Security->requireSecure('login', 'register', 'checkEmail');
              parent::beforeFilter();
     }
 
@@ -144,7 +144,7 @@ class UsersController extends AppController {
             $this->Email->subject = 'Password reset request';
             $this->Email->template = 'reset_pw';
             
-            //$this->Email->delivery = 'debug';
+            $this->Email->delivery = 'debug';
     
             $this->Email->send();
             pr($this->Session->read('Message.email.message'));
