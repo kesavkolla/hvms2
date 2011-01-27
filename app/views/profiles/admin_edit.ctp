@@ -2,7 +2,7 @@
 <?php $userType = $session->read('Auth.User.type'); ?>
 
     <div class="sub-header clearfix">
-        <h2><?php __('Admin Profile');?></h2>
+        <h2><?php __('User Profile (Admin Edit)');?></h2>
     </div>
 
 <div class="profiles form">

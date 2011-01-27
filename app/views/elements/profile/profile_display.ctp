@@ -31,7 +31,7 @@
 												 '.</div>';
 		}
 
-		if (isset($curProfile['relocate'])) {
+		if (isset($curProfile['relocate']) && $curProfile['relocate']) {
 			echo '<div class="relocate"> I am willing to relocate. </div>';
 		}
 	

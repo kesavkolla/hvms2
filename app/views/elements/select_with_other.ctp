@@ -37,7 +37,7 @@
         var selectElem = $('#<?php echo $selectId ?>');
         var textElem = $('#<?php echo $textId ?>');
         var hintElem = $('#<?php echo $textId ?>-hint');
-        if (selectElem.val().indexOf('Other') >= 0) {
+        if (selectElem.val().toString().indexOf('Other') >= 0) {
             textElem.show();
             hintElem.show();
         }

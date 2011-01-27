@@ -148,13 +148,15 @@ class ProfilesController extends AppController {
 	}
 
 	function edit() {
+		/*
+		// force title on candidate profiles 
 		if ($this->Session->read('Auth.User.type') == 'cand') {
 			$this->Profile->validate['title'] = array (
 												'rule' => 'notEmpty',
 												'required' => true
 												);
 		}
-		
+		*/
 		$uid = $this->Session->read('Auth.User.id');
 		if (!$uid) {
 			$this->Session->setFlash(__('Invalid profile', true));

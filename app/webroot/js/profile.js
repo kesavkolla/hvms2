@@ -12,6 +12,7 @@ $(document).ready(function(){
           source: "/hvms/hospitals/hospNames/",
           minLength: 2
   });
+}); 
   
 
 var hvms = hvms || {};

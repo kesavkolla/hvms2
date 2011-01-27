@@ -2,7 +2,7 @@
 class JobsController extends AppController {
 
 	public $name = 'Jobs';
-    public $uses = array ('Job', 'Vendor');
+    public $uses = array ('Job', 'Vendor', 'Module');
     public $components = array('Auth');
     public $helpers = array('Inputs', 'Number', 'Time');
         
