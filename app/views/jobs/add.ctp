@@ -9,16 +9,24 @@
 		echo $this->Form->input('jobid',array('label' => 'Job Id'));
 		echo $this->Form->input('startdate', array('label' => 'Start Date'));
 		echo $this->Form->input('enddate', array('label' => 'End Date'));
-		echo $this->Form->input('description');
+		echo $this->Form->input('description', array('rows' => '5', 'cols' => '10'));
 		echo $this->Form->input('location');
+		
+		echo '<div class="input text">';
+		echo $this->Form->label('state');
+		echo $this->Form->select('state', $this->Inputs->getStatesList(), null, array('label' => 'State'));
+		echo '</div>';
+	        
 		echo $this->Form->input('jobtype', array(
 							 'type' => 'select',
 							 'label' => 'Job Type',
 							  'options' => $this->Inputs->getJobTypes()));
 		echo ($this->element('job/schedule'));	
-		echo $this->Form->input('comments');
-		echo $this->Form->input('ratemin', array('label' => 'Minimum Rate'));
-		echo $this->Form->input('ratemax', array('label' => 'Maximum Rate'));
+		echo $this->Form->input('comments', array('rows' => '3', 'cols' => '10'));
+		echo $this->Form->input('ratemin', array('label' => 'Minimum Rate',
+                                                 'after' => '<span class="hint">per hour</span>'));
+		echo $this->Form->input('ratemax', array('label' => 'Maximum Rate',
+                                                 'after' => '<span class="hint">per hour</span>'));
 		echo $this->Form->input('expensespaid', array(
 								'type' => 'select',			
 								'label' => 'Expenses Paid',
@@ -39,7 +47,18 @@
 		<?php echo $this->element('skills', array('data' => $skills, 'selectedSkills' => array())) ?>
 		</div>
 	</div>
-
+	<?php
+			echo '<div class="input text">';
+			echo $this->Form->Input('published',
+									array(
+										'options' => $this->Inputs->getPublishedStatuses(),
+										'type' => 'select',
+										'showEmpty' => false,
+										'after' => '<span class="hint">Your job will be visible to candidates once you publish it</span>',
+									)
+									 );
+			echo '</div>';
+	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>

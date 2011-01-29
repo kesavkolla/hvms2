@@ -19,10 +19,11 @@
 			echo '<div class="title">' . $curProfile['title'] . '</div>';
 		}
 		
-		if (isset($curProfile['city']) || isset($curProfile['state'])) {
+		if ($curProfile['city'] || $curProfile['state']) {
 			echo '<div class="location">(';				
-			echo isset($curProfile['city']) ? $curProfile['city'] : '';
-			echo isset($curProfile['state']) ? ', ' . $curProfile['state'] : '';
+			echo $curProfile['city'] ? $curProfile['city'] : '';
+			echo $curProfile['city'] && $curProfile['state'] ? ', ' : '';
+			echo $curProfile['state'] ?  $curProfile['state'] : '';
 			echo ')</div>';
 		}
 

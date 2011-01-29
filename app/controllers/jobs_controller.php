@@ -75,7 +75,7 @@ class JobsController extends AppController {
               
         $this->paginate =  array (
                                     'fields' => array (
-                                      'DISTINCT Job.id', 'Job.title', 'Job.jobtype', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id', 'Job.published', 'Job.status', 'Job.trusted'
+                                      'DISTINCT Job.id', 'Job.title', 'Job.jobtype', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.state', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id', 'Job.published', 'Job.status', 'Job.trusted'
                                     ),
                                     'joins' => $joinsArray,
                                     'conditions' => $conditions,
@@ -122,11 +122,13 @@ class JobsController extends AppController {
 
 	function add() {
 		if (!empty($this->data)) {
-                        $jobData = $this->prepareJobForDB($this->data);
+            $jobData = $this->prepareJobForDB($this->data);
+            // add user id
+            $jobData['Job']['user_id'] = $this->Session->read('Auth.User.id');            
 			$this->Job->create();
 			if ($this->Job->save($jobData)) {
 				$this->Session->setFlash(__('The job has been saved', true));
-				//$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
 			}
@@ -144,6 +146,9 @@ class JobsController extends AppController {
             if (!empty($this->data)) {
                     $jobData = $this->prepareJobForDB($this->data);
                     $jobData['Job']['id'] = $id;
+                    // add user id
+                    $jobData['Job']['user_id'] = $this->Session->read('Auth.User.id');
+                    
                     if ($this->Job->save($jobData)) {
                             $this->Session->setFlash(__('The job has been saved', true));
                             $this->redirect(array('action' => 'index'));
@@ -154,13 +159,23 @@ class JobsController extends AppController {
                     $selectedSkills = $this->data['Module'];
             }
             if (empty($this->data)) {
-                    $dbData = $this->Job->read(null, $id);
-                    if ($dbData['Job'] ['user_id'] != $this->Session->read('Auth.User.id')) {
+                    $dbData = $this->Job->find('all',
+								array('conditions' => array(
+										 'Job.id' => $id
+										 ),
+										'contain' => array(
+											'Module.id' => array(),
+											'User'
+										),
+									)
+							);
+                    
+                    if ($dbData[0]['Job'] ['user_id'] != $this->Session->read('Auth.User.id')) {
                         $this->Session->setFlash('You cannot edit this job. Please edit jobs that you own');
                         $this->redirect(array('action' => 'index'));
                         
                     }
-                    $this->data = $this->prepareJobForDisplay($dbData);                        
+                    $this->data = $this->prepareJobForDisplay($dbData[0]);                        
                     $selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			
             }
             $this->set('selectedSkills', $selectedSkills);
@@ -192,8 +207,6 @@ class JobsController extends AppController {
 
     
     private function prepareJobforDB($data) {
-        // add user id
-        $data['Job']['user_id'] = $this->Session->read('Auth.User.id');
 
         $jobFormData = &$data['Job'];
         
@@ -246,31 +259,43 @@ class JobsController extends AppController {
 	}
 
 	function admin_edit($id = null) {
-           $selectedSkills = array();
-            if (!$id && empty($this->data)) {
-                    $this->Session->setFlash(__('Invalid job', true));
-                    $this->redirect(array('action' => 'index'));
-                    
-            }
-            if (!empty($this->data)) {
-                    $jobData = $this->prepareJobForDB($this->data);
-                    $jobData['Job']['id'] = $id;                
-            
-                    if ($this->Job->save($jobData)) {
-                            $this->Session->setFlash(__('The job has been saved', true));
-                            $this->redirect(array('action' => 'index'));
-                    } else {
-                            $this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
-                    }
-                    $selectedSkills = $this->data['Module'];
-            }
-            if (empty($this->data)) {
-                    $dbData = $this->Job->read(null, $id);
-                    $this->data = $this->prepareJobForDisplay($dbData);                        
-                    $selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			
-            }
-            $this->set('selectedSkills', $selectedSkills);
-            $this->set('skills', $this->Vendor->getChainedSkills()); 
+        $this->Job->setControllerAction('protectJobID');
+        $selectedSkills = array();
+         if (!$id && empty($this->data)) {
+                 $this->Session->setFlash(__('Invalid job', true));
+                 $this->redirect(array('action' => 'index'));
+                 
+         }
+         if (!empty($this->data)) {
+                 $jobData = $this->prepareJobForDB($this->data);
+                 $jobData['Job']['id'] = $id;                
+         
+                 if ($this->Job->save($jobData)) {
+                         $this->Session->setFlash(__('The job has been saved', true));
+                         $this->redirect(array('action' => 'index'));
+                 } else {
+                         $this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
+                 }
+                 $selectedSkills = $this->data['Module'];
+         }
+         if (empty($this->data)) {
+                 $dbData = $this->Job->find('all',
+                             array('conditions' => array(
+                                      'Job.id' => $id
+                                      ),
+                                     'contain' => array(
+                                         'Module.id' => array(),
+                                         'User'
+                                     ),
+                                 )
+                         );
+                 $this->data = $this->prepareJobForDisplay($dbData[0]);
+                 if (isset($this->data['Module'])) {
+                     $selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			                       
+                 }
+         }
+         $this->set('selectedSkills', $selectedSkills);
+         $this->set('skills', $this->Vendor->getChainedSkills()); 
 	}
     
     function admin_viewuser ($uid = null) {

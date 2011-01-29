@@ -15,9 +15,22 @@ class Job extends AppModel {
             )
     );
 
-    
+     public $validate = array(
+        'title' => array (
+                            'rule' => 'notEmpty',
+                             'required' => true,
+                            ),
+        'startdate' => array (
+                            'rule' => 'notEmpty',
+                             'required' => true,
+                            ),
+        'description' => array (
+                            'rule' => 'notEmpty',
+                             'required' => true,
+                            ),        
+        );   
     public function find($conditions = null, $fields = array(), $order = null, $recursive = null) {
-        if (isset($this->userType )&& $this->userType == 'admin') {
+        if (isset($this->userType )&& $this->userType == 'admin' ) {
             $this->contain("{$this->User->alias}.Hospital.code");
         }
         return parent::find($conditions, $fields, $order, $recursive);
@@ -25,7 +38,7 @@ class Job extends AppModel {
     
     public function afterFind($results) {
         foreach ($results as &$job) {
-            if (isset($job['User']) && isset($job['User']['Hospital'])) {
+            if (isset($job['User']) && isset($job['User']['Hospital'])&& $this->controllerAction != 'protectJobID' ) {
                 $hospCode = isset($job['User']['Hospital']['code']) ? $job['User']['Hospital']['code'] : '';
                 $jobID = isset($job['Job']['jobid']) ? $job['Job']['jobid'] : '';
                 $job['Job']['jobid'] = $hospCode . ' ' . $jobID;
@@ -33,7 +46,7 @@ class Job extends AppModel {
         }
         return $results;
     }
-    
+   
     // get 10 trusted jobs that are public
     function trustedTen($fields = null) {
         $this->recursive = -1;

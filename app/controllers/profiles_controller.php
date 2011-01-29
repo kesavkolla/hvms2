@@ -98,7 +98,7 @@ class ProfilesController extends AppController {
        $this->paginate = array (
 									'order' => array('Profile.id DESC'),
                                     'fields' => array (
-                                      'DISTINCT Profile.id', 'Profile.title', 'Profile.comment', 'Profile.blurb', 'Profile.user_id', 'Profile.published', 'Profile.status', 'Profile.trusted'
+                                      'DISTINCT Profile.id', 'Profile.title', 'Profile.comment', 'Profile.blurb', 'Profile.user_id', 'Profile.published', 'Profile.status', 'Profile.trusted', 'Profile.city', 'Profile.state'
                                     ),
                                     'joins' => $joinsArray,
                                     'conditions' => $conditions,

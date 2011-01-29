@@ -1,7 +1,10 @@
 <?php
 class AppModel extends Model { 
-
-    function setUserState($user) { 
-		pr ($user); exit;
-    } 
+	protected $controllerAction = null;
+ 
+	function setControllerAction( $action = null ) {
+		if($action) {
+			$this->controllerAction = $action;
+		}
+	} 
 }

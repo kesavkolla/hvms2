@@ -26,10 +26,14 @@
                     </dd>
                     <?php } ?>
                     
-                    <?php if (isset($curJob['location'])) { ?>
+                    <?php if ($curJob['location'] || $curJob['state']) { ?>
                     <dt class="location">Location</dt>
                     <dd class="location">
-                            <?php echo $curJob['location']; ?>
+                    <?php
+                        echo $curJob['location'] ? $curJob['location'] : '';
+                        echo $curJob['location'] && $curJob['state'] ? ', ' : '';
+                        echo $curJob['state'] ? $curJob['state'] : '';
+                    ?>
                     </dd>
                     <?php } ?>
 

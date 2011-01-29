@@ -13,20 +13,23 @@
 		if ($curJob['trusted']) {
 			echo "<img class=\"posting-badge\" src=\"{$this->webroot}img/verified_badge.png\" alt=\"Recommended by HealthVMS\" title=\"Recommended by HealthVMS\" />";
 		}
-		?>
+		?>		
 		
 		<div class="title"><?php echo $curJob['title']; ?></div>
         <?php
-        if (isset($curJob['location'])) { 
-            echo '<div class="location">(' . $curJob['location'] . ')   </div>';
-        }
+		if ($curJob['location'] ||  $curJob['state']) {
+			echo '<div class="location">(';				
+			echo $curJob['location'] ? $curJob['location'] : '';
+			echo $curJob['location'] && $curJob['state'] ? ', ' : '';
+			echo $curJob['state'] ? $curJob['state'] : '';
+			echo ')</div>';
+		}
         ?>
         
 		<div class="description">
 			<?php echo $curJob['description']; ?>
 		</div>
 		<div class="details">
-            <div>ID : <?php echo $curJob['id']?> <span style="color:red; font-style:italic">delete before release </span></div>
             <h5 class="list">Employment Details:</h5>
             <?php
                 if (isset($curJob['startdate'])) { 
@@ -60,7 +63,7 @@
                 <h5 class="list">Experience Required:</h5>
                 <?php
                 if (isset($curJob['role'])) {
-                    echo '<div class="role">' . $this->Inputs->formatReplace($curJob['role']) . ' role</div>';
+                    echo '<div class="role">' . $this->Inputs->formatReplace($curJob['role']) . '</div>';
                 }
                 ?>
                 <div class="skills">

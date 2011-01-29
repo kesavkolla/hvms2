@@ -31,7 +31,7 @@
 	
 		echo $this->Form->input('title');
 		echo $this->Form->input('tagline', array('after' => '<span class="hint">Briefly state your strengths</span>'));
-		echo $this->Form->input('blurb');
+		echo $this->Form->input('blurb', array('rows' => '5', 'cols' => '10'));
 		
 		echo $this->Form->input('currentcompany', array('label' => 'Currently Working at', 'id' => 'current-company'));
 	
