@@ -25,4 +25,8 @@ hvms.resetForm = function (formID) {
     $('#' + formID).submit();
 }
 
-    
+hvms.syncFields = function (field1, field2) {
+    $("#" + field1).change ( function () {
+    $("#" + field2).val($("#" + field1).val());
+});
+}    

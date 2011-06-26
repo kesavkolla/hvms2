@@ -62,3 +62,12 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
+
+
+<script type="text/javascript">
+hvms.syncFields("JobStartdateMonth","JobEnddateMonth");
+hvms.syncFields("JobStartdateDay","JobEnddateDay");
+hvms.syncFields("JobStartdateYear","JobEnddateYear");
+
+</script>
+

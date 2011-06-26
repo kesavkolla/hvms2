@@ -1,8 +1,14 @@
 <?php $curJob = $job['Job'] ;?>
+<?php 
+if (!isset($userFlagged)) {
+	$userFlagged = false;
+}
+
+?>
 <div class="job clearfix <?php echo $userFlagged ? 'flagged' : ''?>" id="<?php echo $curJob['id']?>">
 		<div class="title"><?php echo $curJob['title']; ?></div>
         <?php
-        if (isset($curJob['location'])) { 
+        if (isset($curJob['location']) && $curJob['location']) { 
             echo '<div class="location">(' . $curJob['location'] . ')   </div>';
         }
         ?>

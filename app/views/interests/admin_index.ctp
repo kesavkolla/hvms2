@@ -41,7 +41,7 @@
 				
 		?>
 		</td>
-		<td><?php echo $interest['Interest']['comment']; ?>&nbsp;</td>
+		<td><?php echo $interest['Interest']['Comment']; ?>&nbsp;</td>
 		<td><?php echo $interest['Interest']['status']; ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $interest['Interest']['id'])); ?>

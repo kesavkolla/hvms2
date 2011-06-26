@@ -8,3 +8,18 @@
         }
     });
   });
+
+var hvms = hvms || {};
+
+hvms.viewJob= function (jobId) {
+   $.post("jobs/view/" + jobId,
+    null,
+    function (data) {
+        if (data != "") {
+            $("#job-view-header").show();
+            $("#job-preview").html(data);
+	    scroll(50, 0);
+        }
+    }
+   );
+}

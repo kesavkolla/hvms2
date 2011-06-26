@@ -1,13 +1,15 @@
 <?php echo $html->script('profile', array('inline' => false)); ?>
 <?php $userType = $session->read('Auth.User.type'); ?>
-<?php if ($userType == 'cand') { ?>
     <div class="sub-header clearfix">
         <h2><?php __('My Profile');?></h2>
         <div class="sub-menu">
-            [<a href="javascript:void(0)" onclick="hvms.viewProfile(); return false;">View profile</a>]
+<?php if ($userType == 'cand') { ?>		
+		[<a href="javascript:void(0)" onclick="hvms.viewProfile(); return false;">View profile</a>]
+<?php } ?>
+		[<?php echo $this->Html->link('Reset Password', array('controller' => 'users', 'action' => 'resetpw')); ?>]
+
         </div>
     </div>
-<?php } ?>
 
 
 <div class="profiles form">

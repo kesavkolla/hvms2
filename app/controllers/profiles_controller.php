@@ -5,9 +5,12 @@ class ProfilesController extends AppController {
 	public $helpers = array('Inputs');
 
 	function beforeFilter() {	
+		if ($this->params['action'] == 'search') {
+			$this->forceProfile();
+		}
 		// the user should not be a job seeker
-		if ($this->params['action'] == 'search' &&
-				$this->Session->read('Auth.User.type') == 'cand' ) {
+		$unauthorized =  ($this->params['action'] == 'search' && $this->Session->read('Auth.User.type') == 'cand');
+		if ($unauthorized) {
 			$this->Session->setFlash('You are not authorized to view this page.');
 			$this->redirect('/');
 			
@@ -183,7 +186,7 @@ class ProfilesController extends AppController {
 				$profileData['Profile']['user_id'] = $uid;
 				if ($this->Profile->saveAll($profileData)) {
 					if ($this->Session->read('Auth.User.type') == 'cand' ) {
-						$this->Session->setFlash(__('Your profile has been saved. <br/>To see what it will look like to employers, please click "View Profile" below.', true));
+						$this->Session->setFlash(__('Your profile has been saved. <br/>To see what it will look like to employers, please click "View Profile".', true));
 					}
 					else {
 						$this->Session->setFlash(__('Your profile has been saved.', true));						
@@ -387,7 +390,7 @@ class ProfilesController extends AppController {
 				fclose($fp);
 			}
 			// add user id
-			$uid = $this->Session->read('Auth.User.id');
+			//$uid = $this->Session->read('Auth.User.id');
 			$dbData['Profile']['user_id'] = $uid;
 			$this->data = $this->prepareProfileForDisplay($dbData);
 			$selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			

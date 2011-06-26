@@ -105,7 +105,11 @@
     
     <div class="edit">
         <?php
-            echo $this->Html->link(__('Edit this job.', true), array('controller' => 'jobs', 'action' => 'edit', $job['Job']['id']));
+            echo $this->Html->link(__('Edit this job', true), array('controller' => 'jobs', 'action' => 'edit', $job['Job']['id']));
         ?>
+    </div>
+    
+    <div class="view-job">
+	<a href="javascript:void(0)" onclick="hvms.viewJob(<?php echo  $job['Job']['id'] ?>); return false;">See how this job will appear to candidates</a>
     </div>
 </div>

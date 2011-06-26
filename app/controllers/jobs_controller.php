@@ -8,12 +8,13 @@ class JobsController extends AppController {
         
     function beforeFilter() {
         // the user should not be a job poster
-        if ($this->params['action'] == 'search' &&
-            $this->Session->read('Auth.User.type') == 'hosp') {
+	$unauthorized =  ($this->params['action'] == 'search' && $this->Session->read('Auth.User.type') == 'hosp') ||
+			($this->params['action'] != 'search' && $this->Session->read('Auth.User.type') == 'cand');
+        if ($unauthorized) {
             $this->Session->setFlash('You are not authorized to view this page.');
             $this->redirect('/');
-            
         }      
+	
         parent::beforeFilter();
     }
     
@@ -100,6 +101,27 @@ class JobsController extends AppController {
         $interestInstance = ClassRegistry::init('Interest');
         $this->set('userInterestIds', $interestInstance->getInterestIdsForUser($this->Session->read('Auth.User.id')));
     }
+
+	function view($jobId) {
+		$uid = $this->Session->read('Auth.User.id');
+		if (!$uid || !$jobId) {
+			$this->Session->setFlash(__('Invalid job', true));
+			$this->redirect('/');
+			
+		}
+		$this->set('job', $this->Job->find('first',
+												   array(
+													'conditions' => array (
+														'Job.id' => $jobId
+														),
+													'contain' => array (
+													   'Module.modulename' => 'Vendor.vendorname',
+														)
+													)
+												   ));
+												   
+		
+	}
 
 	function index() {
                 $jobs = $this->Job->find('all',

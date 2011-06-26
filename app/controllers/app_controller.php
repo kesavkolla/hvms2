@@ -46,5 +46,15 @@ class AppController extends Controller {
       $this->redirect('http://' . env('SERVER_NAME') . $this->here);
     }
   }
+
+  function forceProfile() {
+    if ($this->Session->read('Auth.User.type') != 'admin' && 
+        $uid = $this->Session->read('Auth.User.id')) {
+      if (!$profile = classRegistry::init('Profile')->findByUserId($uid)) {
+        $this->Session->setFlash('You must complete your profile before using the site.');
+        $this->redirect(array('controller' => 'profiles', 'action' => 'edit'));
+      }
+    }
+  }
 }
 ?>

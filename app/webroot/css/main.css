@@ -207,6 +207,25 @@ a.teaser-button {
     font-weight: bold;
 }
 
+
+#footer {
+    text-align: center;
+}
+
+#footer ul {
+    list-style: none;
+    padding-top: 20px;
+}
+
+#footer li {
+    border-left: 1px solid #ccc;
+    display: inline;
+    padding: 0px 10px;
+}
+
+#footer li.first {
+    border: none;
+}
 /* form css */
 form div {
 	clear: both;
@@ -377,6 +396,10 @@ form .downloadlink {
 }
 
 /* jobs formatting */
+.index .job {
+	width: 400px; /* for the add/edit job page */
+}
+
 .job {
     width: 600px;
     border: 1px solid #eee;
@@ -436,6 +459,17 @@ form .downloadlink {
     font-style: italic;   
 }
 
+.job-view {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 450px;
+}
+
+.job-view .job {
+    width: 400px;
+}
+/* search styles */
 /* profile */
 .profile {
     width: 600px;
@@ -524,6 +558,10 @@ form .downloadlink {
 
 .flagged {
     background: url('../img/interested_note.png') no-repeat 100% 50%;
+}
+
+.loading {
+    background: url('../img/ajax-loader.gif') no-repeat 90% 50%;
 }
 
 .interest-link,

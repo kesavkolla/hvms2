@@ -17,6 +17,7 @@
 <?php
    echo $html->css('reset');
    echo $html->css('main');
+   echo $html->css('jquery-ui/jquery-ui-1.8.6.custom.css');
 ?>
 
 <!--[if lte IE 7]> 
@@ -35,7 +36,20 @@ echo $this->element('header');
 ?>
 <div id="container">
 <?php
-echo $this->Session->flash();
+
+if ($flashMsg = $this->Session->flash()) {
+
+    echo '<div id="flashDialog">' . $flashMsg . '</div>';
+?>
+<script> 
+$(function() {
+    $( "#flashDialog" ).dialog({ title:'Message', modal: true, dialogClass: 'message-popup' });
+});
+</script>
+<?php
+}
+
+echo $flashMsg;
 echo $this->Session->flash('auth');
 echo $content_for_layout;
 
@@ -45,7 +59,10 @@ if ($session->read('Auth.User.type') == 'admin')  {
 ?>
 </div>
 </div>
-	<?php echo $this->element('sql_dump'); ?>
+<?php
+echo $this->element('footer'); 
+?>
+	<?php //echo $this->element('sql_dump'); ?>
 
 </body>
 </html>
