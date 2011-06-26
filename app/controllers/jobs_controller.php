@@ -42,7 +42,8 @@ class JobsController extends AppController {
             $selectedSkills = isset($this->data['Module']) ? $this->data['Module'] : array();
             $interested = $this->data['Job']['interested'];
             $roles = $this->data['Job']['role'];
-
+            $keyword = $this->data['Job']['keyword'];
+	    
             if ($selectedSkills) {
                 $joinsArray [] =  array(
                                         'table' => 'jobs_skills',
@@ -68,12 +69,15 @@ class JobsController extends AppController {
                 $conditions['Job.role'] = $roles;
             }
 
+            if ($keyword) {
+                $conditions['Job.description LIKE'] = "%$keyword%";
+            }
+
             $searchHeading = 'Search Results';
         }
         else {
             $searchHeading = 'All Jobs';
         }
-              
         $this->paginate =  array (
                                     'fields' => array (
                                       'DISTINCT Job.id', 'Job.title', 'Job.jobtype', 'Job.startdate', 'Job.enddate', 'Job.location', 'Job.state', 'Job.schedule', 'Job.expensespaid', 'Job.role', 'Job.description', 'Job.user_id', 'Job.published', 'Job.status', 'Job.trusted'

@@ -25,14 +25,24 @@ class ProfilesController extends AppController {
         $selectedSkills = array();
         $profiles = array();
         $joinsArray = array();
+
+        $keyword = $this->data['Profile']['keyword'];
         $conditions =  array (
                                 'Profile.published' => 1,
                                 'Profile.status' => 1,
                                );
-		if ($this->Session->read('Auth.User.hospital_id')) {
-			$conditions[] = 'Profile.company_id !=' . $this->Session->read('Auth.User.hospital_id'); // exclude employees from the searcher's company
-		}
-		$joinsArray [] =  array(
+	if ($this->Session->read('Auth.User.hospital_id')) {
+		$conditions[] = 'Profile.company_id !=' . $this->Session->read('Auth.User.hospital_id'); // exclude employees from the searcher's company
+	}
+        if ($keyword) { // search the tagline and blurb for keyword
+             $conditionsOR['Profile.title LIKE'] = "%$keyword%";
+             $conditionsOR['Profile.blurb LIKE'] = "%$keyword%";
+             $conditionsOR['Profile.tagline LIKE'] = "%$keyword%";
+             $conditions['or'] = $conditionsOR;
+	
+        }
+
+	$joinsArray [] =  array(
 						'table' => 'users',
 						'alias' => 'Users',
 						'type' => 'inner',
@@ -40,16 +50,16 @@ class ProfilesController extends AppController {
 						'conditions'=> array('Users.id = Profile.user_id',
 											 'Users.type = "cand"',
 											)
-					);
+	);
 
-		if ($this->data) {
-			$this->Session->write($sessionSearchKey, $this->data);
-		}
-		else {
-			if ($this->Session->check($sessionSearchKey)) {
+	if ($this->data) {
+		$this->Session->write($sessionSearchKey, $this->data);
+	}
+	else {
+		if ($this->Session->check($sessionSearchKey)) {
 				$this->data = $this->Session->read($sessionSearchKey);
-			}
 		}
+	}
 		
         if ($this->data) {
 			$this->Session->write($sessionSearchKey, $this->data);

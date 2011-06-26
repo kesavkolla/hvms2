@@ -8,6 +8,10 @@
 		Only show jobs I'm interested in
 	</div>
 	
+	<div class="input keyword">
+		<?php echo $this->Form->input('keyword', array('label' => 'Keyword')); ?>
+	</div>
+	
 	<?php
 	echo $this->Form->input('role', array(
 										 'type' => 'select',
