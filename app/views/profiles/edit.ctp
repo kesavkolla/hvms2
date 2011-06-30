@@ -58,7 +58,7 @@
 									   'fieldName' => 'startavailability')));		
 			echo $this->Form->input('relocate', array('label' => 'I can relocate'));
 			
-			if (isset($this->data['Profile']['resume_name'])) {
+			if (isset($this->data['Profile']['resume_name']) && !$resumeEmpty) {
 					$resumeLink =  '<span class="downloadlink">' .
 								   $html->link($this->data['Profile']['resume_name'], FILES_URL . $this->data['Profile']['resume_name']) .
 								   '</span>';
@@ -70,6 +70,7 @@
 			}
 			echo $form->input('resume_upload',array('type'=>'file',
 											 'label' => $resumeLabel,
+											 'div' => array('class' => 'required'),
 											 'after' => $resumeLink));
 
 	?>

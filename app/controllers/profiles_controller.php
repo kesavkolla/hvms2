@@ -34,10 +34,9 @@ class ProfilesController extends AppController {
 	if ($this->Session->read('Auth.User.hospital_id')) {
 		$conditions[] = 'Profile.company_id !=' . $this->Session->read('Auth.User.hospital_id'); // exclude employees from the searcher's company
 	}
-        if ($keyword) { // search the tagline and blurb for keyword
+        if ($keyword) { // search the title and blurb for keyword
              $conditionsOR['Profile.title LIKE'] = "%$keyword%";
              $conditionsOR['Profile.blurb LIKE'] = "%$keyword%";
-             $conditionsOR['Profile.tagline LIKE'] = "%$keyword%";
              $conditions['or'] = $conditionsOR;
 	
         }
@@ -176,6 +175,8 @@ class ProfilesController extends AppController {
 			$this->redirect('/');
 			
 		}
+		$formSubmitted = !empty($this->data);
+		$fileErrors = null;
 		if (!empty($this->data)) {
 			$fileUpload = $this->fileUpload();
 			$fileErrors = $fileUpload ? $fileUpload['error'] : null;
@@ -206,7 +207,7 @@ class ProfilesController extends AppController {
 					$this->Session->setFlash(__('The profile could not be saved. Please, try again.', true));
 				}
 			}
-			else if (isset($fileErrors)) {
+			else if ($fileErrors) {
 				$this->Profile->invalidate('resume_upload', $fileErrors);
 				$this->Session->setFlash(__('The profile could not be saved. See errors below.', true));
 			}
@@ -223,6 +224,7 @@ class ProfilesController extends AppController {
 									)
 							);
 
+		$resumeEmpty = false;
 		$dbData = $profileDBData ? $profileDBData[0] : null;
 		if ($dbData) {
 			if ($dbData['Profile']['resume_name']) {
@@ -232,13 +234,22 @@ class ProfilesController extends AppController {
 				$fp  = fopen($tmpName, 'w');
 				fwrite($fp, stripslashes($content));
 				fclose($fp);
+				if (!file_exists($tmpName))
+				{
+					$resumeEmpty = true;
+				}
 			}
 			$this->data = $this->prepareProfileForDisplay($dbData);
 			$selectedSkills = Set::classicExtract($this->data['Module'], '{n}.id');			
 		}
-
+		if (!$fileErrors && $formSubmitted && $resumeEmpty && !isset($this->data['Profile']['resume_upload'])) { // the form has been submitted and there is no resume in the db or the upload field
+				$this->Profile->invalidate('resume_upload', 'A resume is required to complete your profile');
+				$this->Session->setFlash(__('The profile could not be saved. See errors below.', true));
+		}
+		
 		$this->set('selectedSkills', isset($selectedSkills) ? $selectedSkills : array());
 		$this->set('skills', ClassRegistry::init('Vendor')->getChainedSkills());
+		$this->set('resumeEmpty', $resumeEmpty);
 	}
 	
 	private function fileUpload() {
